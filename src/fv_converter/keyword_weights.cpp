@@ -70,5 +70,9 @@ void keyword_weights::clear() {
   weights_.clear();
 }
 
+std::string keyword_weights::pretty_print() {
+  // TODO
+}
+
 }
 }

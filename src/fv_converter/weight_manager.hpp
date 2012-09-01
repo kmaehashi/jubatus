@@ -55,8 +55,10 @@ class weight_manager {
     ia >> master_weights_;
   }
   void pretty_print(std::ostream& os){
-    // TODO
-    os << "weight_manager pretty_print\n";
+    os << "# diff_weights" << std::endl;
+    diff_weights_.pretty_print(os);
+    os << "# master_weights" << std::endl;
+    master_weights_.pretty_print(os);
   }
 
   template <class Archiver>
