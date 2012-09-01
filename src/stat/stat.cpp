@@ -140,6 +140,11 @@ bool stat::load(std::istream& is){
   ia >> *this;
   return true;
 }
+bool stat::pretty_print(std::ostream& os){
+  // TODO
+  os << "stat pretty_print not implemented yet\n";
+  return false;
+}
 std::string stat::type()const{ return "stat"; };
 
 }

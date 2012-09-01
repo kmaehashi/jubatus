@@ -111,6 +111,16 @@ int run_server(int args, char** argv, const std::string& type)
 {
   try {
     ImplServerClass impl_server(server_argv(args, argv, type));
+
+	// if dump then
+	std::string dump_file = "hoge";
+	std::cout << "--- dump: " << dump_file << " ---" << std::endl;
+	impl_server.get_p()->load(dump_file);
+	impl_server.get_p()->pretty_print(std::cout);
+	std::cout << "--- end ---" << std::endl;
+	exit(0);
+	//end if
+
 #ifdef HAVE_ZOOKEEPER_H
     pfi::network::mprpc::rpc_server& serv = impl_server;
     serv.add<std::vector<std::string>(int)>

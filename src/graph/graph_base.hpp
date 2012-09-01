@@ -62,6 +62,10 @@ public:
 
   void save(std::ostream&);
   void load(std::istream&);
+  void pretty_print(std::ostream& os) {
+    // TODO
+    os << "graph pretty_print not implemented yet\n";
+  }
 
 protected:
   virtual bool save_imp(std::ostream& os) = 0;

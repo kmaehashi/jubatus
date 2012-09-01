@@ -48,6 +48,10 @@ public:
 
   virtual bool save(std::ostream&) = 0;
   virtual bool load(std::istream&) = 0;
+  virtual bool pretty_print(std::ostream& os) {
+    os << "pretty_print not implemented for this kind of storage\n";
+    return false;
+  }
 
   virtual void update(const std::string &feature, const std::string& inc_class, const std::string& dec_class, const val1_t& w);
 

@@ -354,6 +354,18 @@ bool jubatus_serv::load(std::string id) {
   }
 }
 
+bool jubatus_serv::pretty_print(std::ostream & os) {
+  try {
+    for (size_t i=0; i<mixables_.size(); ++i) {
+      mixables_[i]->pretty_print(os);
+    }
+    return true;
+  } catch (const std::runtime_error& e) {
+    LOG(ERROR) << e.what();
+    throw;
+  }
+}
+
 void jubatus_serv::get_members(std::vector<std::pair<std::string,int> >& ret)
 {
   ret.clear();

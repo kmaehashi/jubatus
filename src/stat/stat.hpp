@@ -60,6 +60,7 @@ public:
 
   bool save(std::ostream&);
   bool load(std::istream&);
+  bool pretty_print(std::ostream&);
   std::string type() const;
 
 private:

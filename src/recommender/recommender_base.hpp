@@ -51,6 +51,10 @@ public:
 
   void save(std::ostream&);
   void load(std::istream&);
+  void pretty_print(std::ostream& os) {
+    // TODO
+    os << "recommender_base pretty_print\n";
+  }
 
   static float calc_similality(sfv_t& q1, sfv_t& q2);
   static float calc_l2norm(const sfv_t& query);

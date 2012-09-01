@@ -60,6 +60,7 @@ namespace jubatus { namespace framework {
 
     // APPLY CHANGES TO JUBAVISOR WHEN ARGUMENTS MODIFIED
 
+    p.add<std::string>("dump", 'D', "pretty print saved model", false, "");
     p.add("version", 'v', "version");
 
     p.parse_check(args, argv);
@@ -86,7 +87,7 @@ namespace jubatus { namespace framework {
     if(z != "" and name == ""){
       throw JUBATUS_EXCEPTION(argv_error("can't start multinode mode without name specified"));
     }
-    
+
     LOG(INFO) << boot_message(jubatus::util::get_program_name());
   };
 

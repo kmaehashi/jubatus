@@ -62,6 +62,7 @@ public:
 
   bool save(std::string id);
   bool load(std::string id);
+  bool pretty_print(std::ostream & os);
 
   // after load( model_ was loaded from file ) called, users reset their own data
   // I'm afraid this function is useless

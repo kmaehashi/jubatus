@@ -43,6 +43,7 @@ public:
   virtual void reduce(const std::string&, std::string&) const = 0;
   virtual void save(std::ostream & ofs) = 0;
   virtual void load(std::istream & ifs) = 0;
+  virtual void pretty_print(std::ostream & os) = 0;
   virtual void clear() = 0;
 };
 
@@ -94,6 +95,9 @@ public:
   }
   void load(std::istream & is){
     model_->load(is);
+  }
+  void pretty_print(std::ostream & os) {
+    model_->pretty_print(os);
   }
 
   void set_mixer(function<Diff(const Model*)> get_diff_fun, //get_diff

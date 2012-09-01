@@ -54,6 +54,10 @@ class weight_manager {
     ia >> diff_weights_;
     ia >> master_weights_;
   }
+  void pretty_print(std::ostream& os){
+    // TODO
+    os << "weight_manager pretty_print\n";
+  }
 
   template <class Archiver>
   void serialize(Archiver &ar) {
