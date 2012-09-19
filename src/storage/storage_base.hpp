@@ -53,7 +53,7 @@ public:
     return false;
   }
 
-  virtual void update(const std::string &feature, const std::string& inc_class, const std::string& dec_class, const val1_t& w);
+  virtual void update(const std::string& feature, const std::string& inc_class, const std::string& dec_class, const val1_t& w);
 
   virtual void bulk_update(const sfv_t& sfv, float step_width, const std::string& inc_class, const std::string& dec_class);
 
