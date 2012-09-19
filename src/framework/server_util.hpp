@@ -33,6 +33,7 @@
 #include <pficommon/lang/function.h>
 #include <pficommon/network/mprpc.h>
 #include <pficommon/lang/shared_ptr.h>
+#include <pficommon/text/json.h>
 
 #ifdef HAVE_ZOOKEEPER_H
 #  include "../common/lock_service.hpp"
@@ -67,6 +68,8 @@ struct server_argv {
   std::string eth;
   int interval_sec;
   int interval_count;
+  std::string load_file;
+  bool dump;
 
   MSGPACK_DEFINE(join, port, timeout, threadnum, program_name, type, z, name,
       tmpdir, eth, interval_sec, interval_count);
@@ -110,7 +113,20 @@ template <class ImplServerClass, class UserServClass>
 int run_server(int args, char** argv, const std::string& type)
 {
   try {
-    ImplServerClass impl_server(server_argv(args, argv, type));
+    server_argv sa(args, argv, type);
+    ImplServerClass impl_server(sa);
+    if (sa.load_file != "") {
+        impl_server.get_p()->load(sa.load_file);
+    }
+
+    if (sa.dump) {
+        // pretty print here
+		pfi::text::json::json js(new pfi::text::json::json_object());
+		impl_server.get_p()->save_json(js);
+        std::cout << pfi::text::json::pretty(js) << std::endl;
+        return 0;
+    }
+
 #ifdef HAVE_ZOOKEEPER_H
     pfi::network::mprpc::rpc_server& serv = impl_server;
     serv.add<std::vector<std::string>(int)>

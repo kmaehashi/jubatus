@@ -60,6 +60,8 @@ namespace jubatus { namespace framework {
 
     // APPLY CHANGES TO JUBAVISOR WHEN ARGUMENTS MODIFIED
 
+    p.add<std::string>("load", 'L', "load the model", false, "");
+    p.add("dump", 'D', "dump the loaded model as JSON and exit");
     p.add("version", 'v', "version");
 
     p.parse_check(args, argv);
@@ -83,6 +85,9 @@ namespace jubatus { namespace framework {
     interval_sec = p.get<int>("interval_sec");
     interval_count = p.get<int>("interval_count");
 
+    load_file = p.get<std::string>("load");
+    dump = p.exist("dump");
+
     if(z != "" and name == ""){
       throw JUBATUS_EXCEPTION(argv_error("can't start multinode mode without name specified"));
     }
@@ -92,7 +97,8 @@ namespace jubatus { namespace framework {
 
   server_argv::server_argv():
     join(false), port(9199), timeout(10), threadnum(2), z(""), name(""),
-    tmpdir("/tmp"), eth("localhost"), interval_sec(5), interval_count(1024)
+    tmpdir("/tmp"), eth("localhost"), interval_sec(5), interval_count(1024),
+    load_file(""), dump(false)
   {
   };
 

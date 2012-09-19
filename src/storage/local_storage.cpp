@@ -38,7 +38,7 @@ local_storage::~local_storage()
   
 }
 
-void local_storage::get(const string& feature, feature_val1_t& ret)
+void local_storage::get(const std::string& feature, feature_val1_t& ret)
 {
   ret.clear();
   id_features3_t::const_iterator cit = tbl_.find(feature);
@@ -51,7 +51,7 @@ void local_storage::get(const string& feature, feature_val1_t& ret)
   }
 }
 
-void local_storage::get2(const string& feature, feature_val2_t& ret)
+void local_storage::get2(const std::string& feature, feature_val2_t& ret)
 {
   ret.clear();
   id_features3_t::const_iterator cit = tbl_.find(feature);
@@ -64,7 +64,7 @@ void local_storage::get2(const string& feature, feature_val2_t& ret)
   }
 }
 
-void local_storage::get3(const string& feature, feature_val3_t& ret)
+void local_storage::get3(const std::string& feature, feature_val3_t& ret)
 {
   ret.clear();
   id_features3_t::const_iterator cit = tbl_.find(feature);
@@ -82,7 +82,7 @@ void local_storage::inp(const sfv_t& sfv, map_feature_val1_t& ret) {
   
   std::vector<float> ret_id(class2id_.size());
   for (sfv_t::const_iterator it = sfv.begin(); it != sfv.end(); ++it){
-    const string& feature = it->first;
+    const std::string& feature = it->first;
     const float val = it->second;
     id_features3_t::const_iterator it2 = tbl_.find(feature);
     if (it2 == tbl_.end()) continue;
@@ -98,24 +98,24 @@ void local_storage::inp(const sfv_t& sfv, map_feature_val1_t& ret) {
   }
 }
 
-void local_storage::set(const string &feature, const string& klass, const val1_t& w)
+void local_storage::set(const std::string &feature, const std::string& klass, const val1_t& w)
 {
   tbl_[feature][class2id_.get_id(klass)].v1 = w;
 }
 
-void local_storage::set2(const string &feature, const string& klass, const val2_t& w)
+void local_storage::set2(const std::string &feature, const std::string& klass, const val2_t& w)
 {
   val3_t& val3 = tbl_[feature][class2id_.get_id(klass)];
   val3.v1 = w.v1;
   val3.v2 = w.v2;
 }
 
-void local_storage::set3(const string &feature, const string& klass, const val3_t& w)
+void local_storage::set3(const std::string &feature, const std::string& klass, const val3_t& w)
 {
   tbl_[feature][class2id_.get_id(klass)] = w;
 }
 
-void local_storage::get_status(std::map<string,std::string>& status){
+void local_storage::get_status(std::map<std::string,std::string>& status){
   status["num_features"] = pfi::lang::lexical_cast<std::string>(tbl_.size());
   status["num_classes"] = pfi::lang::lexical_cast<std::string>(class2id_.size());
 }
@@ -128,7 +128,7 @@ float feature_fabssum(const id_feature_val3_t& f){
   return sum;
 }
 
-void local_storage::bulk_update(const sfv_t& sfv, float step_width, const string& inc_class, const string& dec_class){
+void local_storage::bulk_update(const sfv_t& sfv, float step_width, const std::string& inc_class, const std::string& dec_class){
   uint64_t inc_id = class2id_.get_id(inc_class);
   if (dec_class != ""){
     uint64_t dec_id = class2id_.get_id(dec_class);
@@ -147,7 +147,7 @@ void local_storage::bulk_update(const sfv_t& sfv, float step_width, const string
   }
 }
 
-void local_storage::update(const string &feature, const string& inc_class, const string& dec_class, const val1_t& v) {
+void local_storage::update(const std::string &feature, const std::string& inc_class, const std::string& dec_class, const val1_t& v) {
   id_feature_val3_t& feature_row = tbl_[feature];
   feature_row[class2id_.get_id(inc_class)].v1 += v;
   feature_row[class2id_.get_id(dec_class)].v1 -= v;

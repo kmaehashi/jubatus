@@ -58,6 +58,10 @@ public:
 
   virtual std::string type() const = 0;
 
+private:
+  friend class pfi::data::serialization::access;
+  template<class Ar>
+  void serialize(Ar& ar);
 };
 
 class storage_exception : public jubatus::exception::jubaexception<storage_exception> {

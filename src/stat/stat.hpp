@@ -19,6 +19,7 @@
 
 #include <deque>
 #include <pficommon/concurrent/rwmutex.h>
+#include <pficommon/data/serialization/deque.h>
 #include <pficommon/data/serialization.h>
 #include <pficommon/data/serialization/unordered_map.h>
 #include <pficommon/data/unordered_map.h>
@@ -61,15 +62,6 @@ public:
   bool save(std::ostream&);
   bool load(std::istream&);
   std::string type() const;
-
-private:
-  friend class pfi::data::serialization::access;
-  template <class Archive>
-  void serialize(Archive &ar) {
-    ar & window_size_ & window_;
-  }
-
-  size_t window_size_;
 
 protected:
   struct stat_val {
@@ -150,6 +142,15 @@ protected:
 
   std::deque<std::pair<uint64_t, std::pair<std::string, double> > > window_;
   pfi::data::unordered_map<std::string, stat_val> stats_;
+
+private:
+  friend class pfi::data::serialization::access;
+  template <class Ar>
+  void serialize(Ar &ar) {
+    ar & window_size_ & window_;
+  }
+
+  size_t window_size_;
 
 };
 

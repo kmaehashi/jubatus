@@ -61,6 +61,11 @@ protected:
 
   static const uint64_t complete_row_similar_num_;
   storage::sparse_matrix_storage orig_;
+
+private:
+  friend class pfi::data::serialization::access;
+  template<class Ar>
+  void serialize(Ar& ar);
 };
 
 } // namespace recommender

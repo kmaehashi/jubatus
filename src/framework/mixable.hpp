@@ -19,6 +19,7 @@
 
 #include <string>
 #include <pficommon/lang/function.h>
+#include <pficommon/text/json.h>
 #include <iostream>
 #include <msgpack.hpp>
 #include "../common/exception.hpp"
@@ -43,6 +44,7 @@ public:
   virtual void reduce(const std::string&, std::string&) const = 0;
   virtual void save(std::ostream & ofs) = 0;
   virtual void load(std::istream & ifs) = 0;
+  virtual void save_json(pfi::text::json::json js) = 0;
   virtual void clear() = 0;
 };
 
@@ -94,6 +96,9 @@ public:
   }
   void load(std::istream & is){
     model_->load(is);
+  }
+  void save_json(pfi::text::json::json js) {
+    js.add(pfi::text::json::to_json(*model_));
   }
 
   void set_mixer(function<Diff(const Model*)> get_diff_fun, //get_diff

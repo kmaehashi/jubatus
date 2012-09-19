@@ -28,6 +28,7 @@
 #include <pficommon/system/time_util.h>
 #include <pficommon/system/sysstat.h>
 #include <pficommon/lang/cast.h>
+#include <pficommon/text/json.h>
 #include <cassert>
 
 using std::vector;
@@ -349,6 +350,18 @@ bool jubatus_serv::load(std::string id) {
     return true;
   }catch(const std::runtime_error& e){
     ifs.close();
+    LOG(ERROR) << e.what();
+    throw;
+  }
+}
+
+bool jubatus_serv::save_json(pfi::text::json::json js)  {
+  try{
+    for(size_t i=0; i<mixables_.size(); ++i){
+      mixables_[i]->save_json(js);
+    }
+    return true;
+  }catch(const std::runtime_error& e){
     LOG(ERROR) << e.what();
     throw;
   }

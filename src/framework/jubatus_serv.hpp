@@ -18,6 +18,7 @@
 #pragma once
 
 #include <pficommon/network/mprpc.h>
+#include <pficommon/text/json.h>
 
 #include "server_util.hpp"
 #include "mixer.hpp"
@@ -62,6 +63,7 @@ public:
 
   bool save(std::string id);
   bool load(std::string id);
+  bool save_json(pfi::text::json::json js);
 
   // after load( model_ was loaded from file ) called, users reset their own data
   // I'm afraid this function is useless
