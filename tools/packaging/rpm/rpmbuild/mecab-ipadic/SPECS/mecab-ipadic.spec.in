@@ -23,6 +23,8 @@ BuildRequires:	mecab
 
 Requires:		mecab
 
+AutoReqProv:	no
+
 %description
 IPA Dictionary for MeCab.
 

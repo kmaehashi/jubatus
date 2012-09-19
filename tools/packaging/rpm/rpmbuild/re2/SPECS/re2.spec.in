@@ -11,6 +11,8 @@ URL:		http://re2.googlecode.com/
 Source0:	%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+AutoReqProv:	no
+
 %package devel
 Summary:    Headers and libraries for re2
 Requires:   %{name} = %{version}-%{release}

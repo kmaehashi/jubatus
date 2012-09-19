@@ -20,6 +20,8 @@ BuildRequires:	pkgconfig
 
 Requires:		msgpack
 
+AutoReqProv:	no
+
 %package devel
 Summary:	Headers and libraries for pficommon
 Requires:	%{name} = %{version}-%{release}

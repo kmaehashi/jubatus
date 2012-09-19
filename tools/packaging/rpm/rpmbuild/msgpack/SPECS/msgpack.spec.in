@@ -11,6 +11,8 @@ URL:		http://msgpack.org/
 Source0:	http://msgpack.org/releases/cpp/%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+AutoReqProv:	no
+
 %package devel
 Summary:	Headers and libraries for msgpack
 Requires:	%{name} = %{version}-%{release}

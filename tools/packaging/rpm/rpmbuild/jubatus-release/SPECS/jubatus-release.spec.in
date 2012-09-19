@@ -19,6 +19,8 @@ BuildRequires:	redhat-release >= %{package_version}
 
 Requires:		redhat-release >= %{package_version}
 
+AutoReqProv:	no
+
 %description
 Yum Repository for Jubatus and its dependencies.
 

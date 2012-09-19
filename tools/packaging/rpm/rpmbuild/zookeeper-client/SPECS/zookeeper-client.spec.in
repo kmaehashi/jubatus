@@ -17,6 +17,8 @@ URL:		http://zookeeper.apache.org/
 Source0:	%{apache_dist}/zookeeper/zookeeper-%{version}/zookeeper-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+AutoReqProv:	no
+
 %package devel
 Summary:	Headers and libraries for ZooKeeper client
 Requires:	%{name} = %{version}-%{release}

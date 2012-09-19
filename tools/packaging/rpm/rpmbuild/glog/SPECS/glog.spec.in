@@ -11,6 +11,8 @@ URL:		http://code.google.com/p/google-glog/
 Source0:	http://google-glog.googlecode.com/files/%{name}-%{version}.tar.gz
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
+AutoReqProv:	no
+
 %package devel
 Summary:	Headers and libraries for glog
 Requires:	%{name} = %{version}-%{release}
