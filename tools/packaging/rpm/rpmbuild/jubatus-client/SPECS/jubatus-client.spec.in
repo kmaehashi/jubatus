@@ -18,7 +18,8 @@ URL:		http://jubat.us/
 Source0:	https://github.com/downloads/jubatus/jubatus/%{target_archive}
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
-Requires:	pficommon >= 1.3.1
+Requires:	pficommon-devel >= 1.3.1
+Requires:	msgpack-devel
 
 AutoReqProv:	no
 
@@ -34,7 +35,7 @@ This package provides Jubatus C++ client headers.
 %install
 %{__rm} -rf %{buildroot}
 %{__install} -d %{buildroot}%{_includedir}/jubatus/client
-%{__cp} -rp cpp/* %{buildroot}%{_includedir}/jubatus/client
+%{__cp} -rp cpp/*/*.hpp %{buildroot}%{_includedir}/jubatus/client
 
 %clean
 %{__rm} -rf %{buildroot}
