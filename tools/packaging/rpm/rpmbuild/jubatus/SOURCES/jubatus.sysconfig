@@ -1,0 +1,19 @@
+# MANDATORY: User to run Jubatus and Jubavisor; using `root` is NOT recommended.
+# The user must have write permission to JUBAVISOR_LOGDIR directory.
+#JUBATUS_USER="jubatus"
+JUBATUS_USER="root"
+
+# MANDATORY: ZooKeeper host and port number.
+JUBATUS_ZOOKEEPER="localhost:2181"
+
+# Port number which jubavisor listens on.
+#JUBAVISOR_RPC_PORT="9198"
+
+# RPC timeout.
+#JUBAVISOR_RPC_TIMEOUT="10"
+
+# Where to output all child process' log files
+#JUBAVISOR_LOGDIR="/var/log/jubatus"
+
+# Additional arguments (if needed)
+#JUBAVISOR_ARGS=""

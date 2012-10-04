@@ -1,0 +1,92 @@
+#!/bin/sh
+#
+# Jubatus - Distributed Online Machine Learning Framework
+#
+# chkconfig:   2345 60 25
+# description: Jubatus is a distributed processing framework and \
+#				streaming machine learning library. \
+#				This service starts and stops jubavisor, the controller \
+#				of Jubatus servers.
+#
+### BEGIN INIT INFO
+# Provides: jubatus
+# Required-Start: $network
+# Required-Stop:
+# Should-Start:
+# Should-Stop: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Starts and stops jubavisor
+# Description: Jubatus is a distributed processing framework and
+#				streaming machine learning library.
+#				This service starts and stops jubavisor, the controller
+#				of Jubatus servers.
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+exec="/usr/bin/jubavisor"
+prog=$(basename $exec)
+
+# default settings
+JUBATUS_USER="root"
+JUBATUS_ZOOKEEPER=""
+JUBAVISOR_RPC_PORT="9198"
+JUBAVISOR_RPC_TIMEOUT="10"
+JUBAVISOR_LOGDIR="/var/log/jubatus"
+JUBAVISOR_ARGS=""
+
+# pull in sysconfig settings
+[ -f /etc/sysconfig/jubatus ] && . /etc/sysconfig/jubatus
+
+lockfile=/var/lock/subsys/$prog
+
+start() {
+	echo -n $"Starting $prog: "
+	daemon --user "${JUBATUS_USER}" $exec \
+		--daemon \
+		--zookeeper="${JUBATUS_ZOOKEEPER}" \
+		--rpc-port="${JUBAVISOR_RPC_PORT}" \
+		--logdir="${JUBAVISOR_LOGDIR}" \
+		--timeout="${JUBAVISOR_RPC_TIMEOUT}" \
+		${JUBAVISOR_ARGS}
+	retval=$?
+	echo
+	[ $retval -eq 0 ] && touch $lockfile
+	return $retval
+}
+
+stop() {
+	echo -n $"Stopping $prog: "
+	killproc $prog
+	retval=$?
+	echo
+	[ $retval -eq 0 ] && rm -f $lockfile
+	return $retval
+}
+
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+	start|stop|restart)
+		$1
+		;;
+	force-reload)
+		restart
+		;;
+	status)
+		status $prog
+		;;
+	try-restart|condrestart)
+		if status $prog >/dev/null ; then
+			restart
+		fi
+		;;
+	*)
+		echo $"Usage: $0 {start|stop|status|restart|try-restart|force-reload}"
+		exit 2
+esac
