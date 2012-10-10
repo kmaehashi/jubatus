@@ -1,0 +1,23 @@
+Source: ux
+Priority: extra
+Maintainer: PFI & NTT <jubatus@googlegroups.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev
+Standards-Version: 3.9.3
+Section: libs
+Homepage: http://code.google.com/p/ux-trie/
+
+Package: libux0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: More Succinct Trie Data structure
+ UX is a library for managing string collections, and support
+ several string operations efficiently as in trie.
+
+Package: libux-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libux0 (= ${binary:Version})
+Description: Headers and libraries for UX
+ This package provides headers and libraries needed to
+ develop applications using UX.

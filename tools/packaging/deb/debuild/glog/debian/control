@@ -1,0 +1,24 @@
+Source: glog
+Priority: extra
+Maintainer: PFI & NTT <jubatus@googlegroups.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev
+Standards-Version: 3.9.3
+Section: libs
+Homepage: http://code.google.com/p/google-glog/
+
+Package: libglog0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Logging library for C++
+ The glog library implements application-level logging.
+ This library provides logging APIs based on C++-style streams
+ and various helper macros.
+
+Package: libglog-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libglog0 (= ${binary:Version})
+Description: Headers and libraries for glog
+ This package provides headers and libraries needed to
+ develop applications using glog.

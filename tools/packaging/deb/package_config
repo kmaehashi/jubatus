@@ -1,0 +1,57 @@
+# ==============================================================================
+# Jubatus
+# ==============================================================================
+PKG_jubatus_VERSION="0.3.2"
+PKG_jubatus_RELEASE="1"
+PKG_jubatus_URL="https://github.com/jubatus/jubatus.git"
+PKG_jubatus_URL_TYPE="git"
+PKG_jubatus_CHECKOUT="jubatus-${PKG_jubatus_VERSION}"
+#PKG_jubatus_CHECKOUT="develop"
+PKG_jubatus_IS_SNAPSHOT="no"
+
+# ==============================================================================
+# Jubatus Client Header (C++)
+# ==============================================================================
+PKG_jubatus_client_VERSION="0.3.2.20121005"
+PKG_jubatus_client_RELEASE="1"
+PKG_jubatus_client_URL="https://github.com/downloads/jubatus/jubatus/jubatus_client.0.3.2.2012-10-05.tar.gz"
+PKG_jubatus_client_URL_TYPE="tar.gz"
+PKG_jubatus_client_ARCHIVE_DIR="jubatus_client.0.3.2"
+
+# ==============================================================================
+# pficommon
+# ==============================================================================
+PKG_pficommon_VERSION="1.3.1"
+PKG_pficommon_RELEASE="1"
+PKG_pficommon_URL="https://github.com/pfi/pficommon.git"
+PKG_pficommon_URL_TYPE="git"
+PKG_pficommon_CHECKOUT="0b2a805ac026407fcd7b50b77d86b8d00e6a99ac"
+#PKG_pficommon_CHECKOUT="v${PKG_pficommon_VERSION}"
+PKG_pficommon_IS_SNAPSHOT="yes"
+
+# ==============================================================================
+# glog
+# ==============================================================================
+PKG_glog_VERSION="0.3.2"
+PKG_glog_RELEASE="1"
+PKG_glog_URL="http://google-glog.googlecode.com/files/glog-${PKG_glog_VERSION}.tar.gz"
+PKG_glog_URL_TYPE="tar.gz"
+
+# ==============================================================================
+# re2
+# ==============================================================================
+PKG_re2_VERSION="0"
+PKG_re2_RELEASE="1"
+PKG_re2_URL="https://re2.googlecode.com/hg"
+PKG_re2_URL_TYPE="hg"
+PKG_re2_CHECKOUT="401ab4168e8e5cd2ff5903ce5d2d8b92cfec191d"
+#PKG_re2_CHECKOUT="v${PKG_re2_VERSION}"
+PKG_re2_IS_SNAPSHOT="yes"
+
+# ==============================================================================
+# ux
+# ==============================================================================
+PKG_ux_VERSION="0.1.8"
+PKG_ux_RELEASE="1"
+PKG_ux_URL="http://ux-trie.googlecode.com/files/ux-${PKG_ux_VERSION}.tar.bz2"
+PKG_ux_URL_TYPE="tar.bz2"

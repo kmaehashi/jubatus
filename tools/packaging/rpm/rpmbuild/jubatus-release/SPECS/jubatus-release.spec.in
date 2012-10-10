@@ -1,8 +1,8 @@
 # Disable *-debuginfo for this package as we don't have any ELF binaries
 %global debug_package %{nil}
 
-%define package_version @JUBATUS_RELEASE_VERSION@
-%define package_release @JUBATUS_RELEASE_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
 
 Name:		jubatus-release
 Version:	%{package_version}

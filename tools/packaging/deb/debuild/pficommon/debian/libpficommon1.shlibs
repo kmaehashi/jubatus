@@ -1,0 +1,13 @@
+libpficommon 1 libpficommon1
+libpficommon_concurrent 1 libpficommon1
+libpficommon_data 1 libpficommon1
+libpficommon_lang 1 libpficommon1
+libpficommon_math 1 libpficommon1
+libpficommon_network_base 1 libpficommon1
+libpficommon_network_cgi 1 libpficommon1
+libpficommon_network_http 1 libpficommon1
+libpficommon_network_mprpc 1 libpficommon1
+libpficommon_network_rpc 1 libpficommon1
+libpficommon_system 1 libpficommon1
+libpficommon_text 1 libpficommon1
+libpficommon_visualization 1 libpficommon1

@@ -1,0 +1,5 @@
+usr/bin/juba*
+usr/lib/libjuba*.so
+usr/lib/libmecab_splitter.so
+usr/lib/libre2_splitter.so
+usr/lib/libux_splitter.so

@@ -1,0 +1,26 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	./waf --nocache configure --prefix=/usr --enable-zookeeper --enable-ux --enable-mecab
+
+override_dh_auto_build:
+	./waf --nocache
+
+override_dh_auto_test:
+	./waf --nocache --checkall
+
+override_dh_auto_install:
+	./waf --nocache install --destdir=debian/tmp
+	rm -rf debian/tmp/usr/include/jubatus/client
+
+override_dh_auto_clean:
+	./waf --nocache distclean
+	find . -name "*.pyc" -type f -delete
+	rm -rf .unittest-gtest

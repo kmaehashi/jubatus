@@ -1,5 +1,6 @@
-%define package_version @UX_VERSION@
-%define package_release @UX_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
+%define package_url     @URL@
 
 %define __waf ./waf
 
@@ -10,7 +11,7 @@ Summary:	More Succinct Trie Data structure
 Group:		Development/Libraries
 License:	New BSD License
 URL:		http://code.google.com/p/ux-trie/
-Source0:	http://ux-trie.googlecode.com/files/%{name}-%{version}.tar.bz2
+Source0:	%{package_url}
 Patch0:		ux-fix-waf-libdir.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 

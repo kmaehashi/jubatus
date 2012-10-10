@@ -1,11 +1,11 @@
 # Disable *-debuginfo for this package as we don't have any ELF binaries
 %global debug_package %{nil}
 
-%define package_version @MECAB_IPADIC_VERSION@
-%define package_release @MECAB_IPADIC_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
+%define package_url     @URL@
 
-%define target_archive @MECAB_IPADIC_ARCHIVE@
-%define target_dirname @MECAB_IPADIC_ARCHIVE_DIR@
+%define target_dirname @ARCHIVE_DIR@
 
 Name:		mecab-ipadic
 Version:	%{package_version}
@@ -15,7 +15,7 @@ Group:		Applications/Text
 # License is "mecab-ipadic": http://fedoraproject.org/wiki/Licensing#Good_Licenses
 License:	mecab-ipadic
 URL:		http://code.google.com/p/mecab/
-Source0:	http://mecab.googlecode.com/files/%{target_archive}
+Source0:	%{package_url}
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 # mecab-config command (in mecab package) is required to configure mecab-ipadic

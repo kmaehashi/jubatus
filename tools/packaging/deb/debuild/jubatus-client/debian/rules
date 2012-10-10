@@ -1,0 +1,24 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	echo "OK: Nothing to configure"
+
+override_dh_auto_build:
+	echo "OK: Nothing to build"
+
+override_dh_auto_test:
+	echo "OK: Nothing to test"
+
+override_dh_auto_install:
+	install -d debian/tmp/usr/include/jubatus/client
+	cp -rp cpp/*.hpp debian/tmp/usr/include/jubatus/client
+
+override_dh_auto_clean:
+	echo "OK: Nothing to clean"

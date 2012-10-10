@@ -1,5 +1,6 @@
-%define package_version @GLOG_VERSION@
-%define package_release @GLOG_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
+%define package_url     @URL@
 
 Name:		glog
 Version:	%{package_version}
@@ -8,7 +9,7 @@ Summary:	Logging library for C++
 Group:		Development/Libraries
 License:	New BSD License
 URL:		http://code.google.com/p/google-glog/
-Source0:	http://google-glog.googlecode.com/files/%{name}-%{version}.tar.gz
+Source0:	%{package_url}
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %package devel

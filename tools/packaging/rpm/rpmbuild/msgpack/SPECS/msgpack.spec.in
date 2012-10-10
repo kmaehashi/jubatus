@@ -1,5 +1,6 @@
-%define package_version @MSGPACK_VERSION@
-%define package_release @MSGPACK_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
+%define package_url     @URL@
 
 Name:		msgpack
 Version:	%{package_version}
@@ -8,7 +9,7 @@ Summary:	An efficient binary serialization format
 Group:		Development/Libraries
 License:	Apache License 2.0
 URL:		http://msgpack.org/
-Source0:	http://msgpack.org/releases/cpp/%{name}-%{version}.tar.gz
+Source0:	%{package_url}
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %package devel

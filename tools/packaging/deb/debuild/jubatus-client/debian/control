@@ -1,0 +1,15 @@
+Source: jubatus-client
+Priority: extra
+Maintainer: PFI & NTT <jubatus@googlegroups.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev
+Standards-Version: 3.9.3
+Section: libdevel
+Homepage: http://jubat.us/
+
+Package: jubatus-client
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libpficommon1 (>= 1.3.1), libmsgpackc2
+Description: Jubatus C++ Client
+ Jubatus is a distributed processing framework and streaming machine
+ learning library. This package provides Jubatus C++ client headers.

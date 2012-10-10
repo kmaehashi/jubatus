@@ -1,5 +1,5 @@
-%define package_version @PFICOMMON_VERSION@
-%define package_release @PFICOMMON_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
 
 %define __waf ./waf
 

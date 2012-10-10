@@ -1,0 +1,97 @@
+# ==============================================================================
+# Jubatus
+# ==============================================================================
+PKG_jubatus_VERSION="0.3.2"
+PKG_jubatus_RELEASE="1"
+PKG_jubatus_URL="https://github.com/jubatus/jubatus.git"
+PKG_jubatus_URL_TYPE="git"
+PKG_jubatus_CHECKOUT="jubatus-${PKG_jubatus_VERSION}"
+#PKG_jubatus_CHECKOUT="develop"
+PKG_jubatus_IS_SNAPSHOT="no"
+
+# ==============================================================================
+# Jubatus Client Header (C++)
+# ==============================================================================
+PKG_jubatus_client_VERSION="0.3.2.20121005"
+PKG_jubatus_client_RELEASE="1"
+PKG_jubatus_client_URL="https://github.com/downloads/jubatus/jubatus/jubatus_client.0.3.2.2012-10-05.tar.gz"
+PKG_jubatus_client_URL_TYPE="tar.gz"
+PKG_jubatus_client_X_DIRNAME="jubatus_client.0.3.2"
+
+# ==============================================================================
+# Jubatus Release (Yum Repository)
+# ==============================================================================
+PKG_jubatus_release_VERSION="6" # RHEL version
+PKG_jubatus_release_RELEASE="1"
+
+# ==============================================================================
+# pficommon
+# ==============================================================================
+PKG_pficommon_VERSION="1.3.1"
+PKG_pficommon_RELEASE="1"
+PKG_pficommon_URL="https://github.com/pfi/pficommon.git"
+PKG_pficommon_URL_TYPE="git"
+PKG_pficommon_CHECKOUT="0b2a805ac026407fcd7b50b77d86b8d00e6a99ac"
+#PKG_pficommon_CHECKOUT="v${PKG_pficommon_VERSION}"
+PKG_pficommon_IS_SNAPSHOT="yes"
+
+# ==============================================================================
+# msgpack
+# ==============================================================================
+PKG_msgpack_VERSION="0.5.7"
+PKG_msgpack_RELEASE="1"
+PKG_msgpack_URL="http://msgpack.org/releases/cpp/msgpack-${PKG_msgpack_VERSION}.tar.gz"
+PKG_msgpack_URL_TYPE="tar.gz"
+
+# ==============================================================================
+# ZooKeeper
+# ==============================================================================
+PKG_zookeeper_VERSION="3.3.6"
+PKG_zookeeper_RELEASE="1"
+# Official mirror is located at: http://www.apache.org/dist
+PKG_zookeeper_URL="http://ftp.jaist.ac.jp/pub/apache/zookeeper/zookeeper-${PKG_zookeeper_VERSION}/zookeeper-${PKG_zookeeper_VERSION}.tar.gz"
+PKG_zookeeper_URL_TYPE="tar.gz"
+
+# ==============================================================================
+# glog
+# ==============================================================================
+PKG_glog_VERSION="0.3.2"
+PKG_glog_RELEASE="1"
+PKG_glog_URL="http://google-glog.googlecode.com/files/glog-${PKG_glog_VERSION}.tar.gz"
+PKG_glog_URL_TYPE="tar.gz"
+
+# ==============================================================================
+# re2
+# ==============================================================================
+PKG_re2_VERSION="0"
+PKG_re2_RELEASE="1"
+PKG_re2_URL="https://re2.googlecode.com/hg"
+PKG_re2_URL_TYPE="hg"
+PKG_re2_CHECKOUT="401ab4168e8e5cd2ff5903ce5d2d8b92cfec191d"
+#PKG_re2_CHECKOUT="v${PKG_re2_VERSION}"
+PKG_re2_IS_SNAPSHOT="yes"
+
+# ==============================================================================
+# ux
+# ==============================================================================
+PKG_ux_VERSION="0.1.8"
+PKG_ux_RELEASE="1"
+PKG_ux_URL="http://ux-trie.googlecode.com/files/ux-${PKG_ux_VERSION}.tar.bz2"
+PKG_ux_URL_TYPE="tar.bz2"
+
+# ==============================================================================
+# mecab
+# ==============================================================================
+PKG_mecab_VERSION="0.994"
+PKG_mecab_RELEASE="1"
+PKG_mecab_URL="http://mecab.googlecode.com/files/mecab-${PKG_mecab_VERSION}.tar.gz"
+PKG_mecab_URL_TYPE="tar.gz"
+
+# ==============================================================================
+# mecab-ipadic
+# ==============================================================================
+PKG_mecab_ipadic_VERSION="2.7.0.20070801"
+PKG_mecab_ipadic_RELEASE="1"
+PKG_mecab_ipadic_URL="http://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz"
+PKG_mecab_ipadic_URL_TYPE="tar.gz"
+PKG_mecab_ipadic_ARCHIVE_DIR="mecab-ipadic-2.7.0-20070801"

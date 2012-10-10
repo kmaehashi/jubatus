@@ -1,0 +1,215 @@
+#!/bin/bash -ue
+
+################################################################################
+# Automatic Packager for Jubatus & Dependencies
+################################################################################
+
+# ------------------------------------------------------------
+# Utilities
+# ------------------------------------------------------------
+# Test if the given command(s) exists in PATH
+@require_commands() {
+    for CMD in "$@"; do
+        if ! which "${CMD}" > /dev/null 2>&1; then
+            echo "ERROR: ${CMD} command not found."
+            return 1
+        fi
+    done
+}
+
+# Run the given command in a cleanroom for environment-sensitive jobs
+@require_commands /usr/bin/env
+cleanroom() {
+    /usr/bin/env -i - HOME="$(echo ~$(whoami))" PATH="/sbin:/bin:/usr/sbin:/usr/bin" "$@"
+}
+
+# Get VCS information
+@require_commands git
+get_commit_id_git()   { git log --pretty=format:'%H' --max-count=1 HEAD; }
+
+@require_commands git tr
+get_commit_date_git() { git log --pretty=format:'%ad' --date=short --max-count=1 HEAD | tr -d '-'; }
+
+@require_commands hg
+get_commit_id_hg()    { hg heads --template='{node}'; }
+
+@require_commands hg tr
+get_commit_date_hg()  { hg heads --template='{date|shortdate}' | tr -d '-'; }
+
+# Download the file if not exists
+@require_commands wget basename
+download() {
+    URL="${1}"; shift
+
+    if [ ! -s "$(basename "${URL}")" ]; then
+        wget "${URL}"
+    fi
+}
+
+# Unpack waf binary for Debian (see: http://wiki.debian.org/UnpackWaf)
+@require_commands sed mv find rmdir
+unpack_waf() {
+    rm -rf .waf-*
+    ./waf --help &> /dev/null
+    sed -i '/^#==>$/,$d' waf
+    for DIR in waflib wafadmin; do
+        if [ -d .waf-*/${DIR} ]; then
+            mv .waf-*/${DIR} .
+            find ${DIR} -name "*.pyc" -delete
+        fi
+    done
+    rmdir .waf-*
+}
+
+# Copy template file (*.in) and expand variables
+@require_commands cp perl
+fillin_template() {
+    INFILE="${1}"; shift
+    FILE="${1}"; shift
+
+    cp -a "${INFILE}" "${FILE}"
+    for KEY in "${@}"; do
+        if [ ! -z "${!KEY:-}" ]; then
+            VALUE="${!KEY:-}"
+            perl -pi -e "s|\@${KEY}\@|${VALUE}|g" "${FILE}"
+        fi
+    done
+}
+
+# ------------------------------------------------------------
+# Usage
+# ------------------------------------------------------------
+@require_commands cat
+usage() {
+    cat << _EOF_
+
+Usage:
+    ${PACKAGER} [-u] [-c|-C] [[-i] [-a|-j|-p package...]]
+
+Options:
+    [Operation]
+      -a    Build all packages.
+      -j    Build Jubatus package ($(action_list_packages_jubatus)) only.
+      -p    Build the specified package(s) only. Available packages are:
+              $(action_list_packages_jubatus) $(action_list_packages_others)
+
+    [Build Actions]
+      -i    Automatically install built packages.
+              If you don't have packages required to build packages (e.g., dev
+              packages that provides headers) installed, use this option to
+              automatically install built packages for each time, before
+              building next package.
+              You need to setup sudo for this option to work. You may need to
+              type in your password; in this case, the build process will
+              become interactive. You must specify "-c" or "-C" (see below)
+              together with this option.
+
+      -u    Uninstall all installed packages before building packages.
+
+      -c    Clean the build directory excluding downloaded archives before
+            starting build process.
+      -C    Completely clean the build directory before starting build process.
+
+_EOF_
+}
+
+# ------------------------------------------------------------
+# Main
+# ------------------------------------------------------------
+@require_commands cat
+main() {
+    [ $# -lt 1 ] && ( usage; exit 1 );
+
+    # See how we're called.
+    AUTO_INSTALL="no"
+    BUILD_ALL="no"
+    BUILD_JUBATUS="no"
+    BUILD_PKGS="no"
+    UNINSTALL_MODE="no"
+    CLEAN_MODE="no"
+    while getopts iajpucC OPT; do
+        case "${OPT}" in
+            "i" )
+                AUTO_INSTALL="yes" ;;
+            "a" )
+                BUILD_ALL="yes" ;;
+            "j" )
+                BUILD_JUBATUS="yes" ;;
+            "p" )
+                BUILD_PKGS="yes" ;;
+            "u" )
+                UNINSTALL_MODE="yes" ;;
+            "c" )
+                CLEAN_MODE="minimal" ;;
+            "C" )
+                CLEAN_MODE="all" ;;
+            * )
+                usage
+                exit 1
+                ;;
+        esac
+    done
+    shift $((${OPTIND} - 1))
+
+    # When using "-i" mode, "-c" or "-C" must be specified together,
+    # to ensure that previously-built packages are not globbed by wildcard.
+    if [ "${AUTO_INSTALL}" = "yes" -a "${CLEAN_MODE}" = "no" ]; then
+        echo "ERROR: '-c' or '-C' must be specified when using '-i'"
+        exit 2
+    fi
+
+    action_check_environment
+
+    # Clean task
+    if [ "${CLEAN_MODE}" = "minimal" ]; then
+        echo "Cleaning..."
+        action_clean
+    elif [ "${CLEAN_MODE}" = "all" ]; then
+        echo "Cleaning everything..."
+        action_clean_all
+    fi
+
+    # Uninstall task
+    if [ "${UNINSTALL_MODE}" = "yes" ]; then
+        TARGET_PACKAGES="$(action_list_subpackages $(action_list_packages_others) $(action_list_packages_jubatus))"
+        echo "Uninstalling..."
+        action_uninstall_packages ${TARGET_PACKAGES}
+    fi
+
+    # Build task
+    TARGET_PACKAGES=""
+    if [ "${BUILD_ALL}" = "yes" ]; then
+        TARGET_PACKAGES="$(action_list_packages_others) $(action_list_packages_jubatus)"
+    elif [ "${BUILD_JUBATUS}" = "yes" ]; then
+        TARGET_PACKAGES="$(action_list_packages_jubatus)"       
+    elif [ "${BUILD_PKGS}" = "yes" ]; then
+        TARGET_PACKAGES="${@}"
+    fi
+
+    for PACKAGE in ${TARGET_PACKAGES}; do
+        echo "Building ${PACKAGE}..."
+        action_build_package "${PACKAGE}" "${AUTO_INSTALL}"
+    done
+
+    cat << _EOF_
+    ===============================================
+     SUCCESS (${SECONDS} seconds)
+    ===============================================
+_EOF_
+}
+
+# ------------------------------------------------------------
+# Entry Point
+# ------------------------------------------------------------
+
+# Load configuration
+. package_config
+. package_distribution
+
+# Directories
+PACKAGER="$(basename "${0}")"
+PACKAGER_DIR="$(cd $(dirname ${0}) && echo ${PWD})"
+PACKAGER_PKG_DIR="$(action_get_pkg_dir)"
+
+# Main
+[ ${#BASH_SOURCE[@]} = 1 ] && main "$@"

@@ -1,0 +1,5 @@
+usr/bin/genrpc
+usr/lib/libpficommon*.so
+usr/lib/pkgconfig/pficommon.pc
+usr/include/pficommon
+usr/share/pficommon

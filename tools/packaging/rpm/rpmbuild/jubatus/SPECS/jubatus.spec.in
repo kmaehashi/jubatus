@@ -1,5 +1,5 @@
-%define package_version @JUBATUS_VERSION@
-%define package_release @JUBATUS_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
 
 %define __waf ./waf
 

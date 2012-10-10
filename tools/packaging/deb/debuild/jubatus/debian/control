@@ -1,0 +1,24 @@
+Source: jubatus
+Priority: extra
+Maintainer: PFI & NTT <jubatus@googlegroups.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev, libpficommon-dev (>= 1.3.1), libmsgpack-dev, libevent-dev (>= 1.4), libglog-dev (>= 0.3.0), libzookeeper-mt-dev, libre2-dev, libux-dev, libmecab-dev (>= 0.99), pkg-config, python (>= 2.6)
+Standards-Version: 3.9.3
+Section: libs
+Homepage: http://jubat.us/
+
+Package: jubatus
+Section: misc
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpficommon1 (>= 1.3.1), libmsgpackc2, libevent-2.0-5 (>= 1.4), libglog0 (>= 0.3.0), libzookeeper-mt2, libre2-0, libux0, libmecab2 (>= 0.99), mecab-ipadic-utf8
+Description: Distributed processing framework and streaming machine learning library
+ Jubatus is a distributed processing framework and streaming machine
+ learning library.
+
+Package: jubatus-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, jubatus (= ${binary:Version}), libpficommon-dev (>= 1.3.1), libmsgpackc2, libglog0 (>= 0.3.0)
+Description: Headers and libraries to develop engines and plugins for Jubatus Framework
+ Jubatus is a distributed processing framework and streaming machine
+ learning library. This package provides headers and libraries needed
+ to develop new engines or plugins for Jubatus Framework.

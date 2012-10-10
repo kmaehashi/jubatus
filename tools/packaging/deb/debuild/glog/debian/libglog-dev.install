@@ -1,0 +1,5 @@
+usr/lib/libglog.so
+usr/lib/libglog.a
+usr/lib/libglog.la
+usr/lib/pkgconfig/libglog.pc
+usr/include/glog

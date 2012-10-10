@@ -1,5 +1,5 @@
-%define package_version @RE2_VERSION@
-%define package_release @RE2_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
 
 Name:		re2
 Version:	%{package_version}

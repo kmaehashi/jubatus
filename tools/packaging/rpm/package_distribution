@@ -1,0 +1,161 @@
+# RHEL implementation for Packager
+
+action_get_pkg_dir()           { echo "${PACKAGER_DIR}/rpmbuild"; }
+action_list_packages_jubatus() { echo "jubatus jubatus-client jubatus-release"; }
+action_list_packages_others()  { echo "msgpack pficommon zookeeper-client glog re2 ux mecab mecab-ipadic"; }
+
+@require_commands grep awk
+action_list_subpackages() {
+    for PKG in "${@}"; do
+        PKG_NAME="$(grep "^Name:" "${PACKAGER_PKG_DIR}/${PKG}/SPECS/${PKG}.spec.in" | awk '{print $2}')"
+        echo "${PKG_NAME}"
+        echo "${PKG_NAME}-debuginfo"
+        for SUBPKG in $(grep "^%package" "${PACKAGER_PKG_DIR}/${PKG}/SPECS/${PKG}.spec.in" | awk '{print $2}'); do
+            echo "${PKG_NAME}-${SUBPKG}"
+        done
+    done
+}
+
+action_check_environment() {
+    echo -n "" # nop
+}
+
+@require_commands rm
+action_clean() {
+    rm -rf "${PACKAGER_PKG_DIR}"/*/{BUILD,BUILDROOT,RPMS,SRPMS}
+    rm -f "${PACKAGER_PKG_DIR}"/*/SPECS/*.spec
+}
+
+@require_commands rm
+action_clean_all() {
+    action_clean
+    rm -f "${PACKAGER_PKG_DIR}"/*/SOURCES/*.{gz,bz2}
+}
+
+@require_commands sudo yum
+action_uninstall_packages() {
+    for PKG in "${@}"; do
+        sudo yum -y --disablerepo="*" remove "${PKG}"
+    done
+}
+
+@require_commands mkdir rpmbuild sudo yum
+action_build_package() {
+    PACKAGE="${1}"; shift
+    AUTO_INSTALL="${1}"; shift
+
+    SOURCES_DIR="${PACKAGER_PKG_DIR}/${PACKAGE}/SOURCES"
+    RPMS_DIR="${PACKAGER_PKG_DIR}/${PACKAGE}/RPMS"
+    SPECFILE="${PACKAGER_PKG_DIR}/${PACKAGE}/SPECS/${PACKAGE}.spec"
+    SPECINFILE="${SPECFILE}.in"
+
+    mkdir -p "${SOURCES_DIR}"
+
+    # Expand variables
+    for VARNAME in VERSION RELEASE URL URL_TYPE CHECKOUT IS_SNAPSHOT ARCHIVE_DIR; do
+        EXPAND_VARNAME="PKG_${PACKAGE//-/_}_${VARNAME}"
+        if [ ! -z "${!EXPAND_VARNAME:-}" ]; then
+            local $VARNAME="${!EXPAND_VARNAME}"
+        fi
+    done
+
+    # Expand variables
+    fillin_template "${SPECINFILE}" "${SPECFILE}" \
+        VERSION RELEASE URL URL_TYPE CHECKOUT IS_SNAPSHOT ARCHIVE_DIR
+
+    # Download to SOURCES_DIR
+    case "${PACKAGE}" in
+        jubatus )
+            _build_common_vcs
+            ;;
+        jubatus-client )
+            _build_common
+            ;;
+        jubatus-release )
+            _build_common
+            ;;
+        pficommon )
+            _build_common_vcs
+            ;;
+        msgpack )
+            _build_common
+            ;;
+        zookeeper-client )
+            _build_common
+            ;;
+        glog )
+            _build_common
+            ;;
+        re2 )
+            _build_common_vcs
+            ;;
+        ux )
+            _build_common
+            ;;
+        mecab )
+            _build_common
+            ;;
+        mecab-ipadic )
+            _build_common
+            ;;
+        * )
+            echo "Unknown package: ${PACKAGE}"
+            return 1
+    esac
+
+    pushd "${PACKAGER_PKG_DIR}/${PACKAGE}"
+    cleanroom rpmbuild --define "%_topdir "${PACKAGER_PKG_DIR}/${PACKAGE}"" -ba "${SPECFILE}"
+
+    # Install and packages
+    pushd "${RPMS_DIR}"
+    if [ "${AUTO_INSTALL}" = "yes" ]; then
+        sudo yum -y --disablerepo="*" install */${PACKAGE}*-${VERSION}-${RELEASE}.*.rpm
+    fi
+    popd
+}
+
+@require_commands spectool
+_build_common() {
+    pushd "${SOURCES_DIR}"
+    spectool -g "${SPECFILE}"
+    popd
+}
+
+@require_commands rm git hg tar
+_build_common_vcs() {
+    pushd "${SOURCES_DIR}"
+    rm -rf "${PACKAGE}"
+
+    COMMIT_DATE=""
+    case "${URL_TYPE}" in
+        git )
+            git clone "${URL}" "${PACKAGE}"
+            pushd "${PACKAGE}"
+            git checkout "${CHECKOUT}" &> /dev/null
+            COMMIT_ID="$(get_commit_id_git)"
+            COMMIT_DATE="$(get_commit_date_git)"
+            popd
+            ;;
+        hg )
+            hg clone -u "${CHECKOUT}" "${URL}" re2
+            pushd "${PACKAGE}"
+            COMMIT_ID="$(get_commit_id_hg)"
+            COMMIT_DATE="$(get_commit_date_hg)"
+            popd
+            ;;
+        * )
+            echo "Unsupported VCS set in URL_TYPE: ${URL_TYPE}"
+            return 1
+    esac
+
+    pushd "${PACKAGE}"
+    if [ "${IS_SNAPSHOT}" = "yes" ]; then
+        RELEASE="${RELEASE}.${COMMIT_DATE}${URL_TYPE}${COMMIT_ID:0:6}"
+    fi
+    rm -rf .${URL_TYPE}
+    popd
+
+    tar czf "${PACKAGE}-${VERSION}.tar.gz" "${PACKAGE}"
+    rm -rf "${PACKAGE}"
+    popd
+}

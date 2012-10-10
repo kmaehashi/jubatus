@@ -1,0 +1,22 @@
+Source: pficommon
+Priority: extra
+Maintainer: PFI & NTT <jubatus@googlegroups.com>
+Build-Depends: debhelper (>= 8.0.0), autotools-dev, libmsgpack-dev, python (>= 2.6), pkg-config
+Standards-Version: 3.9.3
+Section: libs
+Homepage: http://pfi.github.com/pficommon/
+
+Package: libpficommon1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmsgpackc2
+Description: General purpose C++ library for PFI
+ pficommon is a general purpose C++ library for PFI.
+
+Package: libpficommon-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpficommon1 (= ${binary:Version})
+Description: Headers and libraries for pficommon
+ This package provides headers and libraries needed to
+ develop applications using pficommon.

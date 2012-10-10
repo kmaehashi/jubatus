@@ -1,5 +1,6 @@
-%define package_version @MECAB_VERSION@
-%define package_release @MECAB_RELEASE@
+%define package_version @VERSION@
+%define package_release @RELEASE@
+%define package_url     @URL@
 
 Name:		mecab
 Version:	%{package_version}
@@ -8,7 +9,7 @@ Summary:	Yet Another Part-of-Speech and Morphological Analyzer
 Group:		Applications/Text
 License:	BSD / LGPL 2.1 / GPL 2
 URL:		http://code.google.com/p/mecab/
-Source0:	http://mecab.googlecode.com/files/%{name}-%{version}.tar.gz
+Source0:	%{package_url}
 Patch0:		mecab-fix-dicdir.patch
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
