@@ -47,12 +47,12 @@ mecab_splitter::mecab_splitter(const char* arg)
 
 void mecab_splitter::split(
     const string& string, vector<pair<size_t, size_t> >& ret_boundaries) const {
-  scoped_ptr < MeCab::Tagger > tagger(model_->createTagger());
+  scoped_ptr<MeCab::Tagger> tagger(model_->createTagger());
   if (!tagger) {
     // cannot create tagger
     return;
   }
-  scoped_ptr < MeCab::Lattice > lattice(model_->createLattice());
+  scoped_ptr<MeCab::Lattice> lattice(model_->createLattice());
   if (!lattice) {
     // cannot create lattice
     return;

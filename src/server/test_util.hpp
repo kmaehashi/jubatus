@@ -41,7 +41,7 @@ void wait_server(int port) {
   for (int i = 0; i < 10; ++i) {
     usleep(sleep_time);
     try {
-      cli.call < bool() > ("dummy")();
+      cli.call<bool()>("dummy")();
       throw std::runtime_error("dummy rpc successed");
     } catch (pfi::network::mprpc::method_not_found& e) {
       return;
@@ -59,7 +59,7 @@ pid_t fork_process(const char* name, int port = 9199, std::string config = "") {
   cmd += "/src/server/juba";
   cmd += name;
   child = fork();
-  string port_str = pfi::lang::lexical_cast < std::string > (port);
+  string port_str = pfi::lang::lexical_cast<std::string>(port);
   if (child == 0) {
     const char * const argv[8] = { cmd.c_str(), "-p", port_str.c_str(), "-f",
         config.c_str(), "-d", ".", NULL };

@@ -45,7 +45,7 @@ sfv_t make_dense_sfv(const string& s) {
   size_t i = 0;
   float x = 0;
   while (iss >> x) {
-    sfv.push_back(make_pair(lexical_cast < string > (i++), x));
+    sfv.push_back(make_pair(lexical_cast<string>(i++), x));
   }
 
   return sfv;

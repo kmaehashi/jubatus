@@ -85,7 +85,7 @@ void regression_serv::get_status(status_t& status) const {
 }
 
 bool regression_serv::set_config(const string& config) {
-  jsonconfig::config config_root(lexical_cast < json > (config));
+  jsonconfig::config config_root(lexical_cast<json>(config));
   regression_serv_config conf = jsonconfig::config_cast_check<
       regression_serv_config>(config_root);
 

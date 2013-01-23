@@ -173,7 +173,7 @@ void lsh_index_storage::get_all_row_ids(vector<string>& ids) const {
   const size_t size_upper_bound = master_table_.size()
       + master_table_diff_.size();
 
-  unordered_set < std::string > id_set;
+  unordered_set<std::string> id_set;
   // equivalent to id_set.reserve(size_upper_bound) in C++11
   id_set.rehash(ceil(size_upper_bound / id_set.max_load_factor()));
 
@@ -202,7 +202,7 @@ void lsh_index_storage::similar_row(const vector<float>& hash, float norm,
   const bit_vector bv = binarize(hash);
 
   lsh_probe_generator gen(shifted, table_num_);
-  unordered_set < uint64_t > cands;
+  unordered_set<uint64_t> cands;
 
   for (uint64_t i = 0; i < table_num_; ++i) {
     lsh_vector key = gen.base(i);
@@ -234,7 +234,7 @@ void lsh_index_storage::similar_row(const string& id, uint64_t ret_num,
     }
   }
 
-  unordered_set < uint64_t > cands;
+  unordered_set<uint64_t> cands;
   for (size_t i = 0; i < it->second.lsh_hash.size(); ++i) {
     if (retrieve_hit_rows(it->second.lsh_hash[i], ret_num, cands)) {
       break;

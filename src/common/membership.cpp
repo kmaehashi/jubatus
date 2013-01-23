@@ -89,7 +89,7 @@ void register_actor(lock_service& z, const string& type, const string& name,
         << jubatus::exception::error_api_func("lock_service::create"));
 
   // set exit zlistener here
-  pfi::lang::function < void() > f = &force_exit;
+  pfi::lang::function<void()> f = &force_exit;
   z.push_cleanup(f);
 }
 
@@ -114,7 +114,7 @@ void register_keeper(lock_service& z, const string& type, const string& ip,
         << jubatus::exception::error_api_func("lock_service::create"));
 
   // set exit zlistener here
-  pfi::lang::function < void() > f = &force_exit;
+  pfi::lang::function<void()> f = &force_exit;
   z.push_cleanup(f);
 }
 

@@ -89,7 +89,7 @@ void classifier_serv::get_status(status_t& status) const {
 }
 
 bool classifier_serv::set_config(const string& config) {
-  jsonconfig::config config_root(lexical_cast < json > (config));
+  jsonconfig::config config_root(lexical_cast<json>(config));
   classifier_serv_config conf = jsonconfig::config_cast_check<
       classifier_serv_config>(config_root);
 

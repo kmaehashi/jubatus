@@ -32,11 +32,11 @@ int main(int args, char** argv) {
         .register_async_broadcast<
             std::map<std::string, std::map<std::string, std::string> > >(
         "get_status",
-        pfi::lang::function
-            < std::map<std::string, std::map<std::string, std::string> >(
+        pfi::lang::function<
+            std::map<std::string, std::map<std::string, std::string> >(
                 std::map<std::string, std::map<std::string, std::string> >,
-                std::map<std::string, std::map<std::string, std::string> >)
-            > (&merge<std::string, std::map<std::string, std::string> > ));  //analysis
+                std::map<std::string, std::map<std::string, std::string> >)>(
+            &merge<std::string, std::map<std::string, std::string> >));  //analysis
     return k.run();
   } catch (const jubatus::exception::jubatus_exception& e) {
     LOG(FATAL) << e.diagnostic_information(true);

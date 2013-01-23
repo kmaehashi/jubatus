@@ -36,7 +36,7 @@ typedef error_info<struct error_at_line_, int> error_at_line;
 typedef error_info<struct error_errno_, int> error_errno;
 inline std::string to_string(const error_errno& info) {
   std::string msg(strerror(info.value()));
-  msg += " (" + pfi::lang::lexical_cast < std::string > (info.value()) + ")";
+  msg += " (" + pfi::lang::lexical_cast<std::string>(info.value()) + ")";
   return msg;
 }
 
@@ -109,8 +109,7 @@ template<class Exception, class Tag, class V>
 inline const Exception& operator <<(const Exception& e,
                                     const error_info<Tag, V>& info) {
   return add_info(
-      e,
-      pfi::lang::shared_ptr < error_info_base > (new error_info<Tag, V>(info)));
+      e, pfi::lang::shared_ptr<error_info_base>(new error_info<Tag, V>(info)));
 }
 
 template<class Exception>

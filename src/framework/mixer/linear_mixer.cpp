@@ -65,8 +65,8 @@ linear_communication_impl::linear_communication_impl(
 pfi::lang::shared_ptr<common::try_lockable> linear_communication_impl::create_lock() {
   string path;
   common::build_actor_path(path, type_, name_);
-  return pfi::lang::shared_ptr < common::try_lockable
-      > (new common::lock_service_mutex(*zk_, path + "/master_lock"));
+  return pfi::lang::shared_ptr<common::try_lockable>(
+      new common::lock_service_mutex(*zk_, path + "/master_lock"));
 }
 
 size_t linear_communication_impl::update_members() {
@@ -105,8 +105,8 @@ void linear_communication_impl::put_diff(
 pfi::lang::shared_ptr<linear_communication> linear_communication::create(
     const common::cshared_ptr<common::lock_service>& zk,
     const std::string& type, const std::string& name, int timeout_sec) {
-  return pfi::lang::shared_ptr < linear_communication_impl
-      > (new linear_communication_impl(zk, type, name, timeout_sec));
+  return pfi::lang::shared_ptr<linear_communication_impl>(
+      new linear_communication_impl(zk, type, name, timeout_sec));
 }
 
 linear_mixer::linear_mixer(
@@ -163,9 +163,8 @@ void linear_mixer::updated() {
 
 void linear_mixer::get_status(server_base::status_t& status) const {
   scoped_lock lk(m_);
-  status["linear_mixer.count"] = pfi::lang::lexical_cast < string > (counter_);
-  status["linear_mixer.ticktime"] = pfi::lang::lexical_cast < string
-      > (ticktime_);  // since last mix
+  status["linear_mixer.count"] = pfi::lang::lexical_cast<string>(counter_);
+  status["linear_mixer.ticktime"] = pfi::lang::lexical_cast<string>(ticktime_);  // since last mix
 }
 
 void linear_mixer::mixer_loop() {

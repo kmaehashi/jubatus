@@ -45,12 +45,10 @@ int main(int args, char** argv) {
         "clear", pfi::lang::function<bool(bool, bool)>(&all_and));  //update
     k.register_async_cht<2, node_info>(
         "get_node",
-        pfi::lang::function < node_info(node_info, node_info)
-            > (&pass<node_info> ));  //analysis
+        pfi::lang::function<node_info(node_info, node_info)>(&pass<node_info>));  //analysis
     k.register_async_cht<2, edge_info, unsigned long>(
         "get_edge",
-        pfi::lang::function < edge_info(edge_info, edge_info)
-            > (&pass<edge_info> ));  //analysis
+        pfi::lang::function<edge_info(edge_info, edge_info)>(&pass<edge_info>));  //analysis
     k.register_async_broadcast<bool, std::string>(
         "save", pfi::lang::function<bool(bool, bool)>(&all_and));  //update
     k.register_async_broadcast<bool, std::string>(
@@ -59,11 +57,11 @@ int main(int args, char** argv) {
         .register_async_broadcast<
             std::map<std::string, std::map<std::string, std::string> > >(
         "get_status",
-        pfi::lang::function
-            < std::map<std::string, std::map<std::string, std::string> >(
+        pfi::lang::function<
+            std::map<std::string, std::map<std::string, std::string> >(
                 std::map<std::string, std::map<std::string, std::string> >,
-                std::map<std::string, std::map<std::string, std::string> >)
-            > (&merge<std::string, std::map<std::string, std::string> > ));  //analysis
+                std::map<std::string, std::map<std::string, std::string> >)>(
+            &merge<std::string, std::map<std::string, std::string> >));  //analysis
 
     return k.run();
   } catch (const jubatus::exception::jubatus_exception& e) {

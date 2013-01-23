@@ -26,8 +26,8 @@ template<typename T>
 T get_param(const pfi::text::json::json& config, const std::string& name,
             T default_value) {
   using namespace pfi::text::json;
-  if (is < json_object > (config) && config.count(name))
-    return json_cast_with_default < T > (config[name], default_value);
+  if (is<json_object>(config) && config.count(name))
+    return json_cast_with_default<T>(config[name], default_value);
 
   return default_value;
 }

@@ -60,8 +60,9 @@ static int add_all(int i, int j, int k) {
   return (i + j + k);
 }
 static string various(int i, float f, double d, strw s) {
-  string ret = pfi::lang::lexical_cast < string > (i) + pfi::lang::lexical_cast
-      < string > (f) + pfi::lang::lexical_cast < string > (d) + s.key + s.value;
+  string ret = pfi::lang::lexical_cast<string>(i)
+      + pfi::lang::lexical_cast<string>(f) + pfi::lang::lexical_cast<string>(d)
+      + s.key + s.value;
   return ret;
 }
 

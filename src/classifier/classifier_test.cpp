@@ -73,7 +73,7 @@ TYPED_TEST_P(classifier_test, sfv_err) {
 sfv_t convert(vector<double>& v) {
   sfv_t fv;
   for (size_t i = 0; i < v.size(); ++i) {
-    string f = "f" + lexical_cast < string > (i);
+    string f = "f" + lexical_cast<string>(i);
     fv.push_back(make_pair(f, v[i]));
   }
   return fv;

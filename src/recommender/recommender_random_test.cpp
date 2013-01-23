@@ -105,7 +105,7 @@ void update_random(recommender_base& r) {
   for (size_t i = 0; i < 100; ++i) {
     vector<double> v;
     make_random(mu, 1.0, 3, v);
-    string row_name = "r1_" + lexical_cast < string > (i);
+    string row_name = "r1_" + lexical_cast<string>(i);
     r.update_row(row_name, make_vec(v[0], v[1], v[2]));
   }
 }

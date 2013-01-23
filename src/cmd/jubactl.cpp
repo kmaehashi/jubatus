@@ -224,7 +224,7 @@ void send2server(const string& cmd, const string& name, const string& zkhosts) {
     jubatus::common::revert(*it, ip, port);
 
     pfi::network::mprpc::rpc_client c(ip, port, 10);
-    pfi::lang::function < int(string) > f = c.call < int(string) > (cmd);
+    pfi::lang::function<int(string)> f = c.call<int(string)>(cmd);
     cout << "sending " << cmd << " / " << name << " to " << *it << "..."
         << std::flush;
     int r = f(name);

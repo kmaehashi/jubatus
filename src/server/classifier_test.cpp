@@ -55,7 +55,7 @@ void make_small_data() {
 datum convert_vector(const vector<double>& vec) {
   datum d;
   for (size_t i = 0; i < vec.size(); i++) {
-    string f = "f" + lexical_cast < string > (i);
+    string f = "f" + lexical_cast<string>(i);
     d.num_values.push_back(make_pair(f, vec[i]));
   }
   return d;
@@ -129,7 +129,7 @@ void load_config(string& c) {
   pfi::text::json::json js;
   ss >> js;
   pfi::text::json::json param(new pfi::text::json::json_object());
-  const string method = pfi::text::json::json_cast < string > (js["method"]);
+  const string method = pfi::text::json::json_cast<string>(js["method"]);
   insert_parameter(method, js);
 
   std::stringstream ret;

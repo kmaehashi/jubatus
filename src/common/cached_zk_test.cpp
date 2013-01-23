@@ -33,10 +33,8 @@ class czk_test : public ::testing::Test {
   pfi::lang::shared_ptr<jubatus::common::lock_service> zk_;
 
   czk_test() {
-    zk_ =
-        pfi::lang::shared_ptr < jubatus::common::lock_service
-            > (common::create_lock_service("zk", "localhost:2181", 1024,
-                                           "test.log"));
+    zk_ = pfi::lang::shared_ptr<jubatus::common::lock_service>(
+        common::create_lock_service("zk", "localhost:2181", 1024, "test.log"));
 
     std::string engine_name, engine_root;
     engine_name = "test";

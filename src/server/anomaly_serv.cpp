@@ -92,7 +92,7 @@ void anomaly_serv::get_status(status_t& status) const {
 }
 
 bool anomaly_serv::set_config(const std::string& config) {
-  jsonconfig::config conf_root(lexical_cast < json > (config));
+  jsonconfig::config conf_root(lexical_cast<json>(config));
   anomaly_serv_config conf = jsonconfig::config_cast_check<anomaly_serv_config>(
       conf_root);
 
@@ -121,7 +121,7 @@ pair<string, float> anomaly_serv::add(const datum& d) {
   check_set_config();
 
   uint64_t id = idgen_.generate();
-  string id_str = pfi::lang::lexical_cast < string > (id);
+  string id_str = pfi::lang::lexical_cast<string>(id);
 
   if (argv().is_standalone()) {
     float score = update(id_str, d);

@@ -35,7 +35,7 @@ namespace jubatus {
 namespace exception {
 typedef error_info<struct test_my_tag_, int> test_my_tag;
 inline string to_string(const test_my_tag& info) {
-  return pfi::lang::lexical_cast < string > (info.value() * 2);
+  return pfi::lang::lexical_cast<string>(info.value() * 2);
 }
 }  // exception
 }  // jubatus

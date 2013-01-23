@@ -219,7 +219,7 @@ void rpc_mclient::join_one_(const std::string &method,
     if (result.value) {
       *result.value = reducer(*result, method_result);
     } else {
-      result.value = pfi::lang::shared_ptr < Res > (new Res(method_result));
+      result.value = pfi::lang::shared_ptr<Res>(new Res(method_result));
     }
   }
   JUBATUS_MSGPACKRPC_EXCEPTION_DEFAULT_HANDLER(method);

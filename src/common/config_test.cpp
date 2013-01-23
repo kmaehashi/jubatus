@@ -27,9 +27,9 @@ class config_trivial : public testing::Test {
  protected:
 
   void SetUp() {
-    zk_ = pfi::lang::shared_ptr < jubatus::common::lock_service
-        > (jubatus::common::create_lock_service("zk", "localhost:2181", 10,
-                                                "/dev/null"));
+    zk_ = pfi::lang::shared_ptr<jubatus::common::lock_service>(
+        jubatus::common::create_lock_service("zk", "localhost:2181", 10,
+                                             "/dev/null"));
 
     engine_ = "engine-name";
     name_ = "test-name";

@@ -57,7 +57,7 @@ class json_config_iarchive_cast {
   template<class T>
   void push_error(const T& e) {
     if (errors_) {
-      errors_->push_back(pfi::lang::shared_ptr < config_error > (new T(e)));
+      errors_->push_back(pfi::lang::shared_ptr<config_error>(new T(e)));
     }
   }
 

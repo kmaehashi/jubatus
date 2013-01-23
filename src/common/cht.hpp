@@ -51,7 +51,7 @@ class cht {
   template<typename T>
   bool find(const T& t, std::vector<std::pair<std::string, int> > & ret,
             size_t s) {
-    std::string k = pfi::lang::lexical_cast < std::string > (t);
+    std::string k = pfi::lang::lexical_cast<std::string>(t);
     return find(k, ret, s);
   }
 

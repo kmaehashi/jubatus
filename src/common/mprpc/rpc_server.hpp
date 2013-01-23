@@ -111,7 +111,7 @@ class invoker0 : public invoker_base {
 template<typename R>
 pfi::lang::shared_ptr<invoker_base> make_invoker(
     const pfi::lang::function<R()> &f) {
-  return pfi::lang::shared_ptr < invoker_base > (new invoker0<R>(f));
+  return pfi::lang::shared_ptr<invoker_base>(new invoker0<R>(f));
 }
 
 template<typename R, typename A1>
@@ -135,7 +135,7 @@ class invoker1 : public invoker_base {
 template<typename R, typename A1>
 pfi::lang::shared_ptr<invoker_base> make_invoker(
     const pfi::lang::function<R(A1)> &f) {
-  return pfi::lang::shared_ptr < invoker_base > (new invoker1<R, A1>(f));
+  return pfi::lang::shared_ptr<invoker_base>(new invoker1<R, A1>(f));
 }
 
 template<typename R, typename A1, typename A2>
@@ -159,7 +159,7 @@ class invoker2 : public invoker_base {
 template<typename R, typename A1, typename A2>
 pfi::lang::shared_ptr<invoker_base> make_invoker(
     const pfi::lang::function<R(A1, A2)> &f) {
-  return pfi::lang::shared_ptr < invoker_base > (new invoker2<R, A1, A2>(f));
+  return pfi::lang::shared_ptr<invoker_base>(new invoker2<R, A1, A2>(f));
 }
 
 template<typename R, typename A1, typename A2, typename A3>
@@ -184,7 +184,7 @@ class invoker3 : public invoker_base {
 template<typename R, typename A1, typename A2, typename A3>
 pfi::lang::shared_ptr<invoker_base> make_invoker(
     const pfi::lang::function<R(A1, A2, A3)> &f) {
-  return pfi::lang::shared_ptr < invoker_base > (new invoker3<R, A1, A2, A3>(f));
+  return pfi::lang::shared_ptr<invoker_base>(new invoker3<R, A1, A2, A3>(f));
 }
 
 template<typename R, typename A1, typename A2, typename A3, typename A4>
@@ -209,8 +209,7 @@ class invoker4 : public invoker_base {
 template<typename R, typename A1, typename A2, typename A3, typename A4>
 pfi::lang::shared_ptr<invoker_base> make_invoker(
     const pfi::lang::function<R(A1, A2, A3, A4)> &f) {
-  return pfi::lang::shared_ptr < invoker_base
-      > (new invoker4<R, A1, A2, A3, A4>(f));
+  return pfi::lang::shared_ptr<invoker_base>(new invoker4<R, A1, A2, A3, A4>(f));
 }
 
 //
@@ -242,8 +241,8 @@ class async_vmethod_invoker1 : public invoker_base {
 template<typename Tuple>
 pfi::lang::shared_ptr<invoker_base> make_async_vmethod_invoker(
     const typename async_vmethod<Tuple>::type &f) {
-  return pfi::lang::shared_ptr < invoker_base
-      > (new async_vmethod_invoker1<Tuple>(f));
+  return pfi::lang::shared_ptr<invoker_base>(
+      new async_vmethod_invoker1<Tuple>(f));
 }
 
 // shortcut

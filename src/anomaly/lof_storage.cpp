@@ -109,7 +109,7 @@ void lof_storage::get_all_row_ids(vector<string>& ids) const {
 }
 
 void lof_storage::update_row(const string& row, const sfv_t& diff) {
-  unordered_set < string > update_set;
+  unordered_set<string> update_set;
 
   {
     sfv_t query;
@@ -124,7 +124,7 @@ void lof_storage::update_row(const string& row, const sfv_t& diff) {
 
   update_set.insert(row);
 
-  update_entries (update_set);
+  update_entries(update_set);
 }
 
 string lof_storage::name() const {

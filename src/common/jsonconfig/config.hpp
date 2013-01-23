@@ -76,7 +76,7 @@ class config {
 
   template<class T>
   bool is() const {
-    return pfi::text::json::is < T > (json_);
+    return pfi::text::json::is<T>(json_);
   }
 
   pfi::text::json::json::json_type_t type() const {

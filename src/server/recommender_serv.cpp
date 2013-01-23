@@ -82,16 +82,16 @@ recommender_serv::~recommender_serv() {
 
 void recommender_serv::get_status(status_t& status) const {
   status_t my_status;
-  my_status["clear_row_cnt"] = lexical_cast < string > (clear_row_cnt_);
-  my_status["update_row_cnt"] = lexical_cast < string > (update_row_cnt_);
-  my_status["build_cnt"] = lexical_cast < string > (build_cnt_);
-  my_status["mix_cnt"] = lexical_cast < string > (mix_cnt_);
+  my_status["clear_row_cnt"] = lexical_cast<string>(clear_row_cnt_);
+  my_status["update_row_cnt"] = lexical_cast<string>(update_row_cnt_);
+  my_status["build_cnt"] = lexical_cast<string>(build_cnt_);
+  my_status["mix_cnt"] = lexical_cast<string>(mix_cnt_);
 
   status.insert(my_status.begin(), my_status.end());
 }
 
 bool recommender_serv::set_config(std::string config) {
-  jsonconfig::config conf_root(lexical_cast < json > (config));
+  jsonconfig::config conf_root(lexical_cast<json>(config));
   recommender_serv_config conf = jsonconfig::config_cast_check<
       recommender_serv_config>(conf_root);
 

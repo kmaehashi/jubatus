@@ -77,9 +77,9 @@ jubervisor::jubervisor(const std::string& hosts, int port, int max,
     port_pool_.push(++port_base_);
   }
 
-  pfi::lang::function < void() > h = bind(&jubervisor::stop_all, this);
+  pfi::lang::function<void()> h = bind(&jubervisor::stop_all, this);
   zk_->push_cleanup(h);
-  pfi::lang::function < void() > g = bind(&::exit_wrapper, -1);
+  pfi::lang::function<void()> g = bind(&::exit_wrapper, -1);
   zk_->push_cleanup(g);
 
   g_jubavisor = this;

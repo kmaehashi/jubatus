@@ -97,7 +97,7 @@ graph_serv::~graph_serv() {
 
 bool graph_serv::set_config(const std::string& config) {
   jsonconfig::config conf_root(
-      pfi::lang::lexical_cast<pfi::text::json::json> (config));
+      pfi::lang::lexical_cast<pfi::text::json::json>(config));
   graph_serv_config conf = jsonconfig::config_cast_check<graph_serv_config>(
       conf_root);
 
@@ -133,7 +133,7 @@ std::string graph_serv::create_node() { /* no lock here */
   check_set_config();
 
   uint64_t nid = idgen_.generate();
-  std::string nid_str = pfi::lang::lexical_cast < std::string > (nid);
+  std::string nid_str = pfi::lang::lexical_cast<std::string>(nid);
 
   if (!argv().is_standalone()) {
     // we dont need global locking, because getting unique id from zk
@@ -407,7 +407,7 @@ bool graph_serv::clear() {
 
 bool graph_serv::create_node_here(const std::string& nid) {
   try {
-    graph::node_id_t id = pfi::lang::lexical_cast < graph::node_id_t > (nid);
+    graph::node_id_t id = pfi::lang::lexical_cast<graph::node_id_t>(nid);
     g_.get_model()->create_node(id);
     g_.get_model()->create_global_node(id);
   } catch (const graph::local_node_exists& e) {  //pass through

@@ -36,10 +36,9 @@ re2_splitter::re2_splitter(const string& regexp, int group)
     throw JUBATUS_EXCEPTION(converter_exception("invalid regular expression: " + regexp));
   }
   if (group > re_.NumberOfCapturingGroups()) {
-    string msg = "regexp '" + regexp + "' only contains " + lexical_cast
-        < string
-        > (re_.NumberOfCapturingGroups()) + " groups, but 'group' is "
-            + lexical_cast < string > (group);
+    string msg = "regexp '" + regexp + "' only contains "
+        + lexical_cast<string>(re_.NumberOfCapturingGroups())
+        + " groups, but 'group' is " + lexical_cast<string>(group);
     throw JUBATUS_EXCEPTION(converter_exception(msg));
   }
 }

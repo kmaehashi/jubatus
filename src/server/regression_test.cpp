@@ -60,7 +60,7 @@ class regression_test : public ::testing::Test {
 datum convert_vector(const vector<double>& vec) {
   datum d;
   for (size_t i = 0; i < vec.size(); i++) {
-    string f = "f" + lexical_cast < string > (i);
+    string f = "f" + lexical_cast<string>(i);
     d.num_values.push_back(make_pair(f, vec[i]));
   }
   return d;

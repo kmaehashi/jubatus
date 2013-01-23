@@ -619,9 +619,9 @@ void graph_wo_index::set_mixed_and_clear_diff(const string& mixed) {
 }
 
 void graph_wo_index::get_status(map<string, string>& status) const {
-  status["local_node_num"] = lexical_cast < string > (local_nodes_.size());
-  status["global_node_num"] = lexical_cast < string > (global_nodes_.size());
-  status["local_edge_num"] = lexical_cast < string > (local_edges_.size());
+  status["local_node_num"] = lexical_cast<string>(local_nodes_.size());
+  status["global_node_num"] = lexical_cast<string>(global_nodes_.size());
+  status["local_edge_num"] = lexical_cast<string>(local_edges_.size());
 }
 
 void graph_wo_index::mix(const string& diff, string& mixed) {

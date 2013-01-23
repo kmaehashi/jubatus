@@ -146,12 +146,10 @@ void local_storage_mixture::set3(const string &feature, const string& klass,
 
 void local_storage_mixture::get_status(
     std::map<std::string, std::string>& status) {
-  status["num_features"] = pfi::lang::lexical_cast < std::string
-      > (tbl_.size());
-  status["num_classes"] = pfi::lang::lexical_cast < std::string
-      > (class2id_.size());
-  status["diff_size"] = pfi::lang::lexical_cast < std::string
-      > (tbl_diff_.size());
+  status["num_features"] = pfi::lang::lexical_cast<std::string>(tbl_.size());
+  status["num_classes"] = pfi::lang::lexical_cast<std::string>(
+      class2id_.size());
+  status["diff_size"] = pfi::lang::lexical_cast<std::string>(tbl_diff_.size());
 }
 
 void local_storage_mixture::update(const string &feature,

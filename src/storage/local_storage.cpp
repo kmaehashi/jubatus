@@ -115,10 +115,9 @@ void local_storage::set3(const string &feature, const string& klass,
 }
 
 void local_storage::get_status(std::map<string, std::string>& status) {
-  status["num_features"] = pfi::lang::lexical_cast < std::string
-      > (tbl_.size());
-  status["num_classes"] = pfi::lang::lexical_cast < std::string
-      > (class2id_.size());
+  status["num_features"] = pfi::lang::lexical_cast<std::string>(tbl_.size());
+  status["num_classes"] = pfi::lang::lexical_cast<std::string>(
+      class2id_.size());
 }
 
 float feature_fabssum(const id_feature_val3_t& f) {

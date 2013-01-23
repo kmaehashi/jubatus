@@ -66,7 +66,7 @@ void stat_serv::get_status(status_t& status) const {
 }
 
 bool stat_serv::set_config(const string& config) {
-  jsonconfig::config conf_root(lexical_cast < json > (config));
+  jsonconfig::config conf_root(lexical_cast<json>(config));
   stat_serv_config conf = jsonconfig::config_cast_check<stat_serv_config>(
       conf_root);
 

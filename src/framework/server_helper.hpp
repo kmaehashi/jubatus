@@ -82,11 +82,11 @@ class server_helper {
     {
       pfi::system::sysstat::sysstat_ret sys;
       get_sysstat(sys);
-      result["loadavg"] = pfi::lang::lexical_cast < std::string > (sys.loadavg);
-      result["total_memory"] = pfi::lang::lexical_cast < std::string
-          > (sys.total_memory);
-      result["free_memory"] = pfi::lang::lexical_cast < std::string
-          > (sys.free_memory);
+      result["loadavg"] = pfi::lang::lexical_cast<std::string>(sys.loadavg);
+      result["total_memory"] = pfi::lang::lexical_cast<std::string>(
+          sys.total_memory);
+      result["free_memory"] = pfi::lang::lexical_cast<std::string>(
+          sys.free_memory);
     }
     return result;
   }
@@ -98,32 +98,31 @@ class server_helper {
 
     util::machine_status_t mt;
     util::get_machine_status(mt);
-    data["VIRT"] = pfi::lang::lexical_cast < std::string > (mt.vm_size);
-    data["RSS"] = pfi::lang::lexical_cast < std::string > (mt.vm_resident);
-    data["SHR"] = pfi::lang::lexical_cast < std::string > (mt.vm_share);
+    data["VIRT"] = pfi::lang::lexical_cast<std::string>(mt.vm_size);
+    data["RSS"] = pfi::lang::lexical_cast<std::string>(mt.vm_resident);
+    data["SHR"] = pfi::lang::lexical_cast<std::string>(mt.vm_share);
 
     // TBD: running_time, epoch_time
     // TBD: type(server type), name(instance name: when zookeeper enabled), eth
-    data["timeout"] = pfi::lang::lexical_cast < std::string > (a.timeout);
-    data["threadnum"] = pfi::lang::lexical_cast < std::string > (a.threadnum);
+    data["timeout"] = pfi::lang::lexical_cast<std::string>(a.timeout);
+    data["threadnum"] = pfi::lang::lexical_cast<std::string>(a.threadnum);
     data["datadir"] = a.datadir;
-    data["interval_sec"] = pfi::lang::lexical_cast < std::string
-        > (a.interval_sec);
-    data["interval_count"] = pfi::lang::lexical_cast < std::string
-        > (a.interval_count);
-    data["is_standalone"] = pfi::lang::lexical_cast < std::string
-        > (a.is_standalone());
+    data["interval_sec"] = pfi::lang::lexical_cast<std::string>(a.interval_sec);
+    data["interval_count"] = pfi::lang::lexical_cast<std::string>(
+        a.interval_count);
+    data["is_standalone"] = pfi::lang::lexical_cast<std::string>(
+        a.is_standalone());
     data["VERSION"] = JUBATUS_VERSION;
     data["PROGNAME"] = a.program_name;
 
-    data["update_count"] = pfi::lang::lexical_cast < std::string
-        > (server_->update_count());
+    data["update_count"] = pfi::lang::lexical_cast<std::string>(
+        server_->update_count());
 
     server_->get_status(data);
 
     server_->get_mixer()->get_status(data);
     data["zk"] = a.z;
-    data["use_cht"] = pfi::lang::lexical_cast < std::string > (use_cht_);
+    data["use_cht"] = pfi::lang::lexical_cast<std::string>(use_cht_);
 
     return status;
   }
