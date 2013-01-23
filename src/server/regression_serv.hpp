@@ -16,7 +16,10 @@
 
 #pragma once
 
+#include <string>
+#include <utility>
 #include <vector>
+
 #include <pficommon/lang/scoped_ptr.h>
 #include <pficommon/lang/shared_ptr.h>
 #include "../common/shared_ptr.hpp"
@@ -66,5 +69,5 @@ class regression_serv : public framework::server_base {
   mixable_weight_manager wm_;
 };
 
-}
-}
+}  // namespace server
+}  // namespace jubatus

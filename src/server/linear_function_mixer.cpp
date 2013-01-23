@@ -1,11 +1,33 @@
+// Jubatus: Online machine learning framework for distributed environment
+// Copyright (C) 2011,2012 Preferred Infrastructure and Nippon Telegraph and Telephone Corporation.
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License version 2.1 as published by the Free Software Foundation.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+#include <string>
+#include <algorithm>
+
 #include <pficommon/lang/bind.h>
 #include "linear_function_mixer.hpp"
 
-using namespace std;
+using std::string;
+using pfi::lang::bind;
+using pfi::lang::_1;
+using pfi::lang::_2;
+
 using jubatus::storage::val3_t;
 using jubatus::storage::feature_val3_t;
 using jubatus::storage::features3_t;
-using namespace pfi::lang;
 
 namespace jubatus {
 namespace server {
@@ -26,7 +48,7 @@ feature_val3_t mix_feature(double w1, double w2, const feature_val3_t& lhs,
   return ret;
 }
 
-}
+}  // namespace
 
 void linear_function_mixer::mix_impl(const diffv& lhs, const diffv& rhs,
                                      diffv& mixed) const {
@@ -39,7 +61,7 @@ void linear_function_mixer::mix_impl(const diffv& lhs, const diffv& rhs,
 
 diffv linear_function_mixer::get_diff_impl() const {
   diffv ret;
-  ret.count = 1;  //FIXME mixer_->get_count();
+  ret.count = 1;  // TODO(kuenishi) mixer_->get_count();
   get_model()->get_diff(ret.v);
   return ret;
 }

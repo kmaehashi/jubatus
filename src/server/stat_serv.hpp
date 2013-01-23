@@ -16,6 +16,10 @@
 
 #pragma once
 
+#include <algorithm>
+#include <string>
+#include <utility>
+
 #include "../stat/mixable_stat.hpp"
 #include "../framework.hpp"
 #include "../framework/mixer/mixer.hpp"
@@ -45,7 +49,6 @@ struct mixable_stat : public framework::mixable<jubatus::stat::mixable_stat,
   void put_diff_impl(const std::pair<double, size_t>& v) {
     get_model()->put_diff(v);
   }
-
 };
 
 class stat_serv : public framework::server_base {
@@ -76,5 +79,5 @@ class stat_serv : public framework::server_base {
   server::mixable_stat stat_;
 };
 
-}
+}  // namespace server
 }  // namespace jubatus

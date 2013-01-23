@@ -18,6 +18,9 @@
 
 #include <cassert>
 #include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 #include <pficommon/lang/cast.h>
 #include <pficommon/concurrent/lock.h>
 #include <pficommon/system/time_util.h>
@@ -33,8 +36,12 @@
 
 using pfi::system::time::clock_time;
 using pfi::system::time::get_clock_time;
-using namespace jubatus::common;
-using namespace jubatus::framework;
+
+using jubatus::common::cshared_ptr;
+using jubatus::common::lock_service;
+using jubatus::common::build_actor_path;
+using jubatus::framework::mixable_holder;
+using jubatus::framework::mixer::create_mixer;
 
 namespace jubatus {
 namespace server {
@@ -85,7 +92,7 @@ graph_serv::graph_serv(const framework::server_argv& a,
   idgen_.set_ls(zk_, counter_path);
 #endif
 
-  mixer_.reset(mixer::create_mixer(a, zk));
+  mixer_.reset(create_mixer(a, zk));
   mixable_holder_.reset(new mixable_holder());
 
   mixer_->set_mixable_holder(mixable_holder_);
@@ -142,7 +149,8 @@ std::string graph_serv::create_node() { /* no lock here */
       std::vector < std::pair<std::string, int> > nodes;
       find_from_cht_(nid_str, 2, nodes);
       if (nodes.empty()) {
-        throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error("no server found in cht: " + argv().name));
+        throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error(
+            "no server found in cht: " + argv().name));
       }
       selective_create_node_(nodes[0], nid_str);
 
@@ -184,10 +192,11 @@ bool graph_serv::remove_node(const std::string& nid) {
     // send true remove_node_ to other machine,
     // if conflicts with create_node, users should re-run to ensure removal
     std::vector < std::pair<std::string, int> > members;
-    get_members_ (members);
+    get_members_(members);
 
     if (!members.empty()) {
-      common::mprpc::rpc_mclient c(members, argv().timeout);  //create global node
+      // create global node
+      common::mprpc::rpc_mclient c(members, argv().timeout);
 
 #ifndef NDEBUG
       for (size_t i = 0; i < members.size(); i++) {
@@ -209,12 +218,12 @@ bool graph_serv::remove_node(const std::string& nid) {
   return true;
 }
 
-//@cht
-edge_id_t graph_serv::create_edge(const std::string& id, const edge_info& ei) { /* no lock here */
+// @cht
+edge_id_t graph_serv::create_edge(const std::string& id, const edge_info& ei) {
   check_set_config();
 
   edge_id_t eid = idgen_.generate();
-  //TODO: assert id==ei.src
+  // TODO(kuenishi): assert id==ei.src
 
   if (!argv().is_standalone()) {
     // we dont need global locking, because getting unique id from zk
@@ -222,9 +231,10 @@ edge_id_t graph_serv::create_edge(const std::string& id, const edge_info& ei) { 
     std::vector < std::pair<std::string, int> > nodes;
     find_from_cht_(ei.src, 2, nodes);
     if (nodes.empty()) {
-      throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error("no server found in cht: " + argv().name));
+      throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error(
+          "no server found in cht: " + argv().name));
     }
-    // TODO: assertion: nodes[0] should be myself
+    // TODO(kuenishi): assertion: nodes[0] should be myself
     {
       pfi::concurrent::scoped_wlock wirte_lk(rw_mutex());
       this->create_edge_here(eid, ei);
@@ -256,7 +266,7 @@ edge_id_t graph_serv::create_edge(const std::string& id, const edge_info& ei) { 
   return eid;
 }
 
-//@random
+// @random
 bool graph_serv::update_edge(const std::string&, edge_id_t eid,
                              const edge_info& ei) {
   check_set_config();
@@ -275,7 +285,7 @@ bool graph_serv::remove_edge(const std::string&, const edge_id_t& id) {
   return true;
 }
 
-//@random
+// @random
 double graph_serv::get_centrality(const std::string& id,
                                   const centrality_type& s,
                                   const preset_query& q) const {
@@ -291,7 +301,7 @@ double graph_serv::get_centrality(const std::string& id,
   }
 }
 
-//@random
+// @random
 std::vector<node_id> graph_serv::get_shortest_path(
     const shortest_path_req& req) const {
   std::vector<jubatus::graph::node_id_t> ret0;
@@ -306,7 +316,7 @@ std::vector<node_id> graph_serv::get_shortest_path(
   return ret;
 }
 
-//update, broadcast
+// update, broadcast
 bool graph_serv::add_centrality_query(const preset_query& q0) {
   check_set_config();
 
@@ -318,7 +328,7 @@ bool graph_serv::add_centrality_query(const preset_query& q0) {
   return true;
 }
 
-//update, broadcast
+// update, broadcast
 bool graph_serv::add_shortest_path_query(const preset_query& q0) {
   check_set_config();
 
@@ -330,7 +340,7 @@ bool graph_serv::add_shortest_path_query(const preset_query& q0) {
   return true;
 }
 
-//update, broadcast
+// update, broadcast
 bool graph_serv::remove_centrality_query(const preset_query& q0) {
   check_set_config();
 
@@ -342,7 +352,7 @@ bool graph_serv::remove_centrality_query(const preset_query& q0) {
   return true;
 }
 
-//update, broadcast
+// update, broadcast
 bool graph_serv::remove_shortest_path_query(const preset_query& q0) {
   check_set_config();
 
@@ -363,7 +373,7 @@ node_info graph_serv::get_node(const std::string& nid) const {
   framework::convert<graph::node_info, jubatus::node_info>(info, ret);
   return ret;
 }
-//@random
+// @random
 edge_info graph_serv::get_edge(const std::string& nid,
                                const edge_id_t& id) const {
   check_set_config();
@@ -377,10 +387,11 @@ edge_info graph_serv::get_edge(const std::string& nid,
   return ret;
 }
 
-//@broadcast
+// @broadcast
 bool graph_serv::update_index() {
   if (!argv().is_standalone()) {
-    throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error("manual mix is available only in standalone mode."));
+    throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error(
+        "manual mix is available only in standalone mode."));
   }
   check_set_config();
 
@@ -390,8 +401,8 @@ bool graph_serv::update_index() {
   g_.get_model()->get_diff(diff);
   g_.get_model()->set_mixed_and_clear_diff(diff);
   clock_time end = get_clock_time();
-  LOG(INFO) << "mix done manually and locally in " << (double) (end - start)
-      << " secs.";
+  LOG(INFO) << "mix done manually and locally in "
+      << static_cast<double>(end - start) << " secs.";
   return true;
 }
 
@@ -410,8 +421,8 @@ bool graph_serv::create_node_here(const std::string& nid) {
     graph::node_id_t id = pfi::lang::lexical_cast<graph::node_id_t>(nid);
     g_.get_model()->create_node(id);
     g_.get_model()->create_global_node(id);
-  } catch (const graph::local_node_exists& e) {  //pass through
-  } catch (const graph::global_node_exists& e) {  //pass through
+  } catch (const graph::local_node_exists& e) {  // pass through
+  } catch (const graph::global_node_exists& e) {  // pass through
   } catch (const std::runtime_error& e) {
     throw;
   }
@@ -428,7 +439,7 @@ bool graph_serv::remove_global_node(const std::string& nid) {
   }
   DLOG(INFO) << "global node removed";
   return true;
-}  //update internal
+}  // update internal
 
 bool graph_serv::create_edge_here(edge_id_t eid, const edge_info& ei) {
   try {
@@ -458,11 +469,11 @@ void graph_serv::find_from_cht_(
   out.clear();
 #ifdef HAVE_ZOOKEEPER_H
   common::cht ht(zk_, argv().type, argv().name);
-  ht.find(key, out, n);  //replication number of local_node
+  ht.find(key, out, n);  // replication number of local_node
 #else
-  //cannot reach here, assertion!
+  // cannot reach here, assertion!
   assert(argv().is_standalone());
-  //out.push_back(make_pair(argv().eth, argv().port));
+  // out.push_back(make_pair(argv().eth, argv().port));
 #endif
 }
 
@@ -476,7 +487,8 @@ void graph_serv::get_members_(std::vector<std::pair<std::string, int> >& ret) {
   }
   try {
     // remove myself
-    for (std::vector<std::pair<std::string,int> >::iterator it = ret.begin(); it != ret.end(); it++) {
+    for (std::vector<std::pair<std::string, int> >::iterator it = ret.begin();
+        it != ret.end(); it++) {
       if (it->first == argv().eth && it->second == argv().port) {
         it = ret.erase(it);
         it--;
@@ -489,5 +501,5 @@ void graph_serv::get_members_(std::vector<std::pair<std::string, int> >& ret) {
 #endif
 }
 
-}
-}
+}  // namespace server
+}  // namespace jubatus

@@ -16,6 +16,10 @@
 
 #pragma once
 
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "../anomaly/anomaly_base.hpp"
 #include "../common/global_id_generator.hpp"
 #include "../common/lock_service.hpp"
@@ -104,5 +108,5 @@ class anomaly_serv : public framework::server_base {
   common::global_id_generator idgen_;
 };
 
-}
-}  // namespace jubatus::server
+}  // namespace server
+}  // namespace jubatus

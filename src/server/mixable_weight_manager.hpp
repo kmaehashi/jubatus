@@ -35,5 +35,5 @@ class mixable_weight_manager : public framework::mixable<
   void clear();
 };
 
-}
-}
+}  // namespace server
+}  // namespace jubatus

@@ -14,23 +14,35 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "gtest/gtest.h"
-#include "regression_client.hpp"
-#include <vector>
-#include <string>
+#include <gtest/gtest.h>
+
 #include <limits>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "regression_client.hpp"
+
 #include "../regression/regression_test_util.hpp"
 #include "../fv_converter/datum.hpp"
 #include "../fv_converter/converter_config.hpp"
 
 #include "test_util.hpp"
 
-using namespace std;
-using namespace jubatus;
+using std::vector;
+using std::map;
+using std::pair;
+using std::make_pair;
+using std::numeric_limits;
+using std::cout;
+using std::endl;
+using pfi::lang::lexical_cast;
 
-using namespace pfi::lang;
+using jubatus::datum;
+using jubatus::client::regression;
 
-static const string NAME = "regression_test";
+static const char* NAME = "regression_test";
 static const int PORT = 65434;
 
 namespace {
@@ -43,18 +55,16 @@ class regression_test : public ::testing::Test {
     child_ = fork_process("regression", PORT,
                           "./test_input/config.regression.json");
   }
-  ;
+
   virtual ~regression_test() {
     kill_process(child_);
   }
-  ;
-  virtual void restart_process() {
 
+  virtual void restart_process() {
     kill_process(this->child_);
     this->child_ = fork_process("regression", PORT,
                                 "./test_input/config.regression.json");
   }
-  ;
 };
 
 datum convert_vector(const vector<double>& vec) {
@@ -100,16 +110,17 @@ string make_simple_config(const string& method) {
 }
 
 void my_test(const char* meth, const char* stor) {
-  client::regression r("localhost", PORT, 10);
-  const size_t example_size = 1000;
-  //string c = make_simple_config(meth);
+  regression r("localhost", PORT, 10);
 
-  //r.set_config(NAME, c);
+  const size_t example_size = 1000;
+  // string c = make_simple_config(meth);
+
+  // r.set_config(NAME, c);
 
   vector < pair<float, datum> > data;
   make_random_data(data, example_size);
   unsigned int res = r.train(NAME, data);
-  ASSERT_TRUE(res == data.size());  //.success);
+  ASSERT_TRUE(res == data.size());  // .success);
 
   vector<float> values;
   vector<datum> datas;
@@ -125,7 +136,7 @@ void my_test(const char* meth, const char* stor) {
   ASSERT_EQ(example_size, result.size());
   ASSERT_EQ(data.size(), result.size());
 
-  vector<float>::const_iterator it0;  //answers
+  vector<float>::const_iterator it0;  // answers
   vector<float>::const_iterator it;
   size_t count = 0;
   for (it = result.begin(), it0 = values.begin();
@@ -133,8 +144,9 @@ void my_test(const char* meth, const char* stor) {
     if (fabs(*it0 - *it) < 2.0)
       count++;
   }
-  EXPECT_GE(count, result.size() - 10);  //num of wrong classification should be less than 1%
 
+  // num of wrong classification should be less than 1%
+  EXPECT_GE(count, result.size() - 10);
 }
 
 TEST_F(regression_test, pa) {
@@ -142,8 +154,7 @@ TEST_F(regression_test, pa) {
 }
 
 TEST_F(regression_test, small) {
-
-  client::regression c("localhost", PORT, 10);
+  regression c("localhost", PORT, 10);
 
   cout << "train" << endl;
   vector<pair<float, datum> > data;
@@ -153,15 +164,15 @@ TEST_F(regression_test, small) {
   c.train(NAME, data);
 
   cout << "get_status" << endl;
-  map<string,map<string,string> > status = c.get_status(NAME);
+  map<string, map<string, string> > status = c.get_status(NAME);
   EXPECT_EQ(status.size(), 1u);
-  for(map<string,map<string,string> >::const_iterator it = status.begin();
+  for (map<string, map<string, string> >::const_iterator it = status.begin();
       it != status.end(); ++it) {
     EXPECT_GE(it->second.size(), 8u);
   }
 
-  c.save("",NAME);
-  c.load("",NAME);
+  c.save("", NAME);
+  c.load("", NAME);
 
   cout << "estimate" << endl;
   vector<datum> test;
@@ -170,4 +181,4 @@ TEST_F(regression_test, small) {
   cout << res.size() << endl;
 }
 
-}
+}  // namespace
