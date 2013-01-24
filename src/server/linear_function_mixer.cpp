@@ -40,8 +40,11 @@ val3_t mix_val3(double w1, double w2, const val3_t& lhs, const val3_t& rhs) {
                 (w1 * lhs.v3 + w2 * rhs.v3) / (w1 + w2));
 }
 
-feature_val3_t mix_feature(double w1, double w2, const feature_val3_t& lhs,
-                           const feature_val3_t& rhs) {
+feature_val3_t mix_feature(
+    double w1,
+    double w2,
+    const feature_val3_t& lhs,
+    const feature_val3_t& rhs) {
   val3_t def(0, 1, 0);
   feature_val3_t ret(lhs);
   storage::detail::binop(ret, rhs, bind(mix_val3, w1, w2, _1, _2), def);
@@ -50,8 +53,10 @@ feature_val3_t mix_feature(double w1, double w2, const feature_val3_t& lhs,
 
 }  // namespace
 
-void linear_function_mixer::mix_impl(const diffv& lhs, const diffv& rhs,
-                                     diffv& mixed) const {
+void linear_function_mixer::mix_impl(
+    const diffv& lhs,
+    const diffv& rhs,
+    diffv& mixed) const {
   features3_t l(lhs.v);
   const features3_t& r(rhs.v);
   storage::detail::binop(l, r, bind(mix_feature, lhs.count, rhs.count, _1, _2));

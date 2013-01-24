@@ -39,9 +39,10 @@ struct mixable_stat : public framework::mixable<jubatus::stat::mixable_stat,
     return get_model()->get_diff();
   }
 
-  void mix_impl(const std::pair<double, size_t>& lhs,
-                const std::pair<double, size_t>& rhs,
-                std::pair<double, size_t>& mixed) const {
+  void mix_impl(
+      const std::pair<double, size_t>& lhs,
+      const std::pair<double, size_t>& rhs,
+      std::pair<double, size_t>& mixed) const {
     mixed = lhs;
     jubatus::stat::mixable_stat::reduce(rhs, mixed);
   }
@@ -53,8 +54,9 @@ struct mixable_stat : public framework::mixable<jubatus::stat::mixable_stat,
 
 class stat_serv : public framework::server_base {
  public:
-  stat_serv(const framework::server_argv&,
-            const common::cshared_ptr<common::lock_service>& zk);
+  stat_serv(
+      const framework::server_argv&,
+      const common::cshared_ptr<common::lock_service>& zk);
   virtual ~stat_serv();
 
   framework::mixer::mixer* get_mixer() const;

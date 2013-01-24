@@ -74,8 +74,9 @@ common::cshared_ptr<recommender::recommender_base> make_model(
 
 }  // namespace
 
-recommender_serv::recommender_serv(const server_argv& a,
-                                   const cshared_ptr<lock_service>& zk)
+recommender_serv::recommender_serv(
+    const server_argv& a,
+    const cshared_ptr<lock_service>& zk)
     : server_base(a) {
   mixer_.reset(create_mixer(a, zk));
   mixable_holder_.reset(new mixable_holder());
@@ -186,8 +187,9 @@ datum recommender_serv::complete_row_from_datum(datum dat) {
   return ret0;
 }
 
-similar_result recommender_serv::similar_row_from_id(std::string id,
-                                                     size_t ret_num) {
+similar_result recommender_serv::similar_row_from_id(
+    std::string id,
+    size_t ret_num) {
   check_set_config();
 
   similar_result ret;

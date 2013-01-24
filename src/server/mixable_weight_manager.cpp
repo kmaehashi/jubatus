@@ -35,9 +35,10 @@ void mixable_weight_manager::put_diff_impl(
   get_model()->put_diff(diff);
 }
 
-void mixable_weight_manager::mix_impl(const keyword_weights& lhs,
-                                      const keyword_weights& rhs,
-                                      keyword_weights& acc) const {
+void mixable_weight_manager::mix_impl(
+    const keyword_weights& lhs,
+    const keyword_weights& rhs,
+    keyword_weights& acc) const {
   acc = rhs;
   acc.merge(lhs);
 }

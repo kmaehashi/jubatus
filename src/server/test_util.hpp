@@ -91,4 +91,3 @@ std::string config_to_string(
   ss << pfi::text::json::to_json(config);
   return ss.str();
 }
-

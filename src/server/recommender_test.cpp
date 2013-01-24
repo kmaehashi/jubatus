@@ -54,7 +54,8 @@ class recommender_test : public ::testing::Test {
   pid_t child_;
 
   recommender_test() {
-    child_ = fork_process("recommender", PORT,
+    child_ = fork_process("recommender",
+                          PORT,
                           "./test_input/config.recommender.json");
   }
 
@@ -64,7 +65,8 @@ class recommender_test : public ::testing::Test {
 
   virtual void restart_process() {
     kill_process(this->child_);
-    this->child_ = fork_process("recommender", PORT,
+    this->child_ = fork_process("recommender",
+                                PORT,
                                 "./test_input/config.recommender.json");
   }
 };
@@ -192,8 +194,9 @@ TYPED_TEST_P(recommender_random_test, random) {
   ASSERT_EQ(10u, ids.size());
   size_t correct = 0;
   for (size_t i = 0; i < ids.size(); ++i) {
-    if (ids[i].first[1] == '1')
-    ++correct;
+    if (ids[i].first[1] == '1') {
+      ++correct;
+    }
   }
   EXPECT_GT(correct, 5u);
 
@@ -209,8 +212,9 @@ TYPED_TEST_P(recommender_random_test, random) {
   ASSERT_EQ(10u, ids.size());
   correct = 0;
   for (size_t i = 0; i < ids.size(); ++i) {
-    if (ids[i].first[1] == '1')
-    ++correct;
+    if (ids[i].first[1] == '1') {
+      ++correct;
+    }
   }
   EXPECT_GT(correct, 5u);
 }

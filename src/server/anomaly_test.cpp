@@ -40,14 +40,17 @@ class anomaly_test : public ::testing::Test {
   pid_t child_;
 
   anomaly_test() {
-    child_ = fork_process("anomaly", PORT, "./test_input/config.anomaly.json");
+    child_ = fork_process("anomaly",
+                          PORT,
+                          "./test_input/config.anomaly.json");
   }
   virtual ~anomaly_test() {
     kill_process(child_);
   }
   virtual void restart_process() {
     kill_process(this->child_);
-    this->child_ = fork_process("anomaly", PORT,
+    this->child_ = fork_process("anomaly",
+                                PORT,
                                 "./test_input/config.anomaly.json");
   }
 };
@@ -123,4 +126,5 @@ TEST_F(anomaly_test, small) {
   { c.get_status(NAME);
   }
 }
-}
+
+}  // namespace

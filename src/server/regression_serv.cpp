@@ -69,8 +69,9 @@ linear_function_mixer::model_ptr make_model(const framework::server_argv& arg) {
 
 }  // namespace
 
-regression_serv::regression_serv(const framework::server_argv& a,
-                                 const cshared_ptr<lock_service>& zk)
+regression_serv::regression_serv(
+    const framework::server_argv& a,
+    const cshared_ptr<lock_service>& zk)
     : server_base(a) {
   gresser_.set_model(make_model(a));
   wm_.set_model(mixable_weight_manager::model_ptr(new weight_manager));

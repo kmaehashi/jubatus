@@ -77,10 +77,12 @@ inline node_id i2n(uint64_t i) {
 inline uint64_t n2i(const node_id& id) {
   return nodeid2uint64(id);
 }
+
 }  // namespace
 
-graph_serv::graph_serv(const framework::server_argv& a,
-                       const cshared_ptr<lock_service>& zk)
+graph_serv::graph_serv(
+    const framework::server_argv& a,
+    const cshared_ptr<lock_service>& zk)
     : server_base(a),
       idgen_(a.is_standalone()) {
 
@@ -146,11 +148,12 @@ std::string graph_serv::create_node() { /* no lock here */
     // we dont need global locking, because getting unique id from zk
     // guarantees there'll be no data confliction
     {
-      std::vector < std::pair<std::string, int> > nodes;
+      std::vector<std::pair<std::string, int> > nodes;
       find_from_cht_(nid_str, 2, nodes);
       if (nodes.empty()) {
-        throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error(
-            "no server found in cht: " + argv().name));
+        throw JUBATUS_EXCEPTION(
+            jubatus::exception::runtime_error(
+                "no server found in cht: " + argv().name));
       }
       selective_create_node_(nodes[0], nid_str);
 
@@ -191,7 +194,7 @@ bool graph_serv::remove_node(const std::string& nid) {
   if (!argv().is_standalone()) {
     // send true remove_node_ to other machine,
     // if conflicts with create_node, users should re-run to ensure removal
-    std::vector < std::pair<std::string, int> > members;
+    std::vector<std::pair<std::string, int> > members;
     get_members_(members);
 
     if (!members.empty()) {
@@ -200,15 +203,17 @@ bool graph_serv::remove_node(const std::string& nid) {
 
 #ifndef NDEBUG
       for (size_t i = 0; i < members.size(); i++) {
-        DLOG(INFO) << "request to " << members[i].first << ":"
-            << members[i].second;
+        DLOG(INFO) << "request to "
+            << members[i].first << ":" << members[i].second;
       }
 #endif
 
       try {
-        c.call(
-            "remove_global_node", argv().name, nid,
-            pfi::lang::function<int(int, int)>(&jubatus::framework::add<int>));
+        c.call("remove_global_node",
+               argv().name,
+               nid,
+               pfi::lang::function<int(int, int)>(
+                   &jubatus::framework::add<int>));
       } catch (const common::mprpc::rpc_no_result& e) {  // pass through
         DLOG(INFO) << e.diagnostic_information(true);
       }
@@ -228,11 +233,12 @@ edge_id_t graph_serv::create_edge(const std::string& id, const edge_info& ei) {
   if (!argv().is_standalone()) {
     // we dont need global locking, because getting unique id from zk
     // guarantees there'll be no data confliction
-    std::vector < std::pair<std::string, int> > nodes;
+    std::vector<std::pair<std::string, int> > nodes;
     find_from_cht_(ei.src, 2, nodes);
     if (nodes.empty()) {
-      throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error(
-          "no server found in cht: " + argv().name));
+      throw JUBATUS_EXCEPTION(
+          jubatus::exception::runtime_error(
+              "no server found in cht: " + argv().name));
     }
     // TODO(kuenishi): assertion: nodes[0] should be myself
     {
@@ -244,8 +250,8 @@ edge_id_t graph_serv::create_edge(const std::string& id, const edge_info& ei) {
         if (nodes[i].first == argv().eth && nodes[i].second == argv().port) {
         } else {
           client::graph c(nodes[i].first, nodes[i].second, 5.0);
-          DLOG(INFO) << "request to " << nodes[i].first << ":"
-              << nodes[i].second;
+          DLOG(INFO) << "request to "
+              << nodes[i].first << ":" << nodes[i].second;
           c.create_edge_here(argv().name, eid, ei);
         }
       } catch (const graph::local_node_exists& e) {  // pass through
@@ -261,19 +267,21 @@ edge_id_t graph_serv::create_edge(const std::string& id, const edge_info& ei) {
     this->create_edge_here(eid, ei);
   }
 
-  DLOG(INFO) << "edge created: " << eid << " ( " << ei.src << " => " << ei.tgt
-      << " )";
+  DLOG(INFO) << "edge created: " << eid
+      << " ( " << ei.src << " => " << ei.tgt << " )";
   return eid;
 }
 
 // @random
-bool graph_serv::update_edge(const std::string&, edge_id_t eid,
-                             const edge_info& ei) {
+bool graph_serv::update_edge(
+    const std::string&,
+    edge_id_t eid,
+    const edge_info& ei) {
   check_set_config();
 
   g_.get_model()->update_edge(eid, ei.p);
-  DLOG(INFO) << "edge updated: " << eid << " ( " << ei.src << " => " << ei.tgt
-      << " )";
+  DLOG(INFO) << "edge updated: " << eid
+      << " ( " << ei.src << " => " << ei.tgt << " )";
   return true;
 }
 
@@ -286,9 +294,10 @@ bool graph_serv::remove_edge(const std::string&, const edge_id_t& id) {
 }
 
 // @random
-double graph_serv::get_centrality(const std::string& id,
-                                  const centrality_type& s,
-                                  const preset_query& q) const {
+double graph_serv::get_centrality(
+    const std::string& id,
+    const centrality_type& s,
+    const preset_query& q) const {
   check_set_config();
 
   if (s == 0) {
@@ -307,7 +316,10 @@ std::vector<node_id> graph_serv::get_shortest_path(
   std::vector<jubatus::graph::node_id_t> ret0;
   jubatus::graph::preset_query q;
   framework::convert(req.q, q);
-  g_.get_model()->shortest_path(n2i(req.src), n2i(req.tgt), req.max_hop, ret0,
+  g_.get_model()->shortest_path(n2i(req.src),
+                                n2i(req.tgt),
+                                req.max_hop,
+                                ret0,
                                 q);
   std::vector<node_id> ret;
   for (size_t i = 0; i < ret0.size(); ++i) {
@@ -390,8 +402,9 @@ edge_info graph_serv::get_edge(const std::string& nid,
 // @broadcast
 bool graph_serv::update_index() {
   if (!argv().is_standalone()) {
-    throw JUBATUS_EXCEPTION(jubatus::exception::runtime_error(
-        "manual mix is available only in standalone mode."));
+    throw JUBATUS_EXCEPTION(
+        jubatus::exception::runtime_error(
+            "manual mix is available only in standalone mode."));
   }
   check_set_config();
 
@@ -452,7 +465,8 @@ bool graph_serv::create_edge_here(edge_id_t eid, const edge_info& ei) {
 }
 
 void graph_serv::selective_create_node_(
-    const std::pair<std::string, int>& target, const std::string nid_str) {
+    const std::pair<std::string, int>& target,
+    const std::string nid_str) {
   if (target.first == argv().eth && target.second == argv().port) {
     pfi::concurrent::scoped_wlock write_lk(rw_mutex());
     this->create_node_here(nid_str);
@@ -464,7 +478,8 @@ void graph_serv::selective_create_node_(
 }
 
 void graph_serv::find_from_cht_(
-    const std::string& key, size_t n,
+    const std::string& key,
+    size_t n,
     std::vector<std::pair<std::string, int> >& out) {
   out.clear();
 #ifdef HAVE_ZOOKEEPER_H

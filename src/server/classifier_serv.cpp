@@ -71,8 +71,9 @@ linear_function_mixer::model_ptr make_model(const framework::server_argv& arg) {
 
 }  // namespace
 
-classifier_serv::classifier_serv(const framework::server_argv& a,
-                                 const cshared_ptr<lock_service>& zk)
+classifier_serv::classifier_serv(
+    const framework::server_argv& a,
+    const cshared_ptr<lock_service>& zk)
     : server_base(a) {
   clsfer_.set_model(make_model(a));
   wm_.set_model(mixable_weight_manager::model_ptr(new weight_manager));
@@ -98,8 +99,8 @@ void classifier_serv::get_status(status_t& status) const {
 
 bool classifier_serv::set_config(const string& config) {
   jsonconfig::config config_root(lexical_cast<json>(config));
-  classifier_serv_config conf = jsonconfig::config_cast_check<
-      classifier_serv_config>(config_root);
+  classifier_serv_config conf =
+      jsonconfig::config_cast_check<classifier_serv_config>(config_root);
 
   config_ = config;
   converter_ = fv_converter::make_fv_converter(conf.converter);
@@ -146,7 +147,7 @@ int classifier_serv::train(const vector<pair<string, jubatus::datum> >& data) {
 
 vector<vector<estimate_result> > classifier_serv::classify(
     const vector<jubatus::datum>& data) const {
-  vector < vector<estimate_result> > ret;
+  vector<vector<estimate_result> > ret;
 
   check_set_config();
 

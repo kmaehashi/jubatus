@@ -52,7 +52,8 @@ class regression_test : public ::testing::Test {
   pid_t child_;
 
   regression_test() {
-    child_ = fork_process("regression", PORT,
+    child_ = fork_process("regression",
+                          PORT,
                           "./test_input/config.regression.json");
   }
 
@@ -62,7 +63,8 @@ class regression_test : public ::testing::Test {
 
   virtual void restart_process() {
     kill_process(this->child_);
-    this->child_ = fork_process("regression", PORT,
+    this->child_ = fork_process("regression",
+                                PORT,
                                 "./test_input/config.regression.json");
   }
 };
@@ -117,10 +119,10 @@ void my_test(const char* meth, const char* stor) {
 
   // r.set_config(NAME, c);
 
-  vector < pair<float, datum> > data;
+  vector<pair<float, datum> > data;
   make_random_data(data, example_size);
   unsigned int res = r.train(NAME, data);
-  ASSERT_TRUE(res == data.size());  // .success);
+  ASSERT_TRUE(res == data.size());
 
   vector<float> values;
   vector<datum> datas;
@@ -141,8 +143,9 @@ void my_test(const char* meth, const char* stor) {
   size_t count = 0;
   for (it = result.begin(), it0 = values.begin();
       it != result.end() && it0 != values.end(); ++it, ++it0) {
-    if (fabs(*it0 - *it) < 2.0)
+    if (fabs(*it0 - *it) < 2.0) {
       count++;
+    }
   }
 
   // num of wrong classification should be less than 1%

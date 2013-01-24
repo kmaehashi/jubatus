@@ -50,8 +50,9 @@ class graph_test : public ::testing::Test {
 
   virtual void restart_process() {
     kill_process(this->child_);
-    this->child_ = fork_process("graph", PORT,
-        "./test_input/config.graph.json");
+    this->child_ = fork_process("graph",
+                                PORT,
+                                "./test_input/config.graph.json");
   }
 };
 

@@ -165,8 +165,8 @@ class classifier_test : public ::testing::TestWithParam<const char*> {
   pid_t child_;
 
   classifier_test() {
-    std::string config_path = "./test_input/config.classifier."
-        + std::string(GetParam()) + ".json";
+    std::string config_path =
+        "./test_input/config.classifier." + std::string(GetParam()) + ".json";
     child_ = fork_process("classifier", PORT, config_path);
   }
 
@@ -176,8 +176,8 @@ class classifier_test : public ::testing::TestWithParam<const char*> {
 
   virtual void restart_process() {
     kill_process(this->child_);
-    std::string config_path = "./test_input/config.classifier."
-        + std::string(GetParam()) + ".json";
+    std::string config_path =
+        "./test_input/config.classifier." + std::string(GetParam()) + ".json";
     this->child_ = fork_process("classifier", PORT, config_path);
   }
 };
@@ -259,7 +259,7 @@ void my_test(const char* method) {
   jubatus::client::classifier cli("localhost", PORT, 10);
   const size_t example_size = 1000;
 
-  vector < pair<string, datum> > data;
+  vector<pair<string, datum> > data;
   make_random_data(data, example_size);
   unsigned int res = cli.train(NAME, data);
   ASSERT_EQ(data.size(), res);
@@ -273,7 +273,7 @@ void my_test(const char* method) {
       datas.push_back(it->second);
     }
   }
-  vector < vector<estimate_result> > result = cli.classify(NAME, datas);
+  vector<vector<estimate_result> > result = cli.classify(NAME, datas);
 //  ASSERT_TRUE(res.);
   ASSERT_EQ(example_size, result.size());
   ASSERT_EQ(data.size(), result.size());
@@ -347,8 +347,8 @@ TEST_P(classifier_test, duplicated_keys) {
     data.push_back(d);
     vector<vector<estimate_result> > result = cli.classify(NAME, data);
     ASSERT_EQ(1u, result.size());
-    // if the classifier could not learn properly, it estimates scores of
-    // labels to NaN and returns no results.
+    /* if the classifier could not learn properly, it estimates
+       scores of labels to NaN and returns no results. */
     ASSERT_EQ(2u, result[0].size());
   }
 }
@@ -429,8 +429,9 @@ TEST_P(classifier_test, save_load) {
   EXPECT_EQ(4, atoi(count_str.c_str()));
 }
 
-string classify_and_get_label(jubatus::client::classifier& cli,
-                              const datum& d) {
+string classify_and_get_label(
+    jubatus::client::classifier& cli,
+    const datum& d) {
   vector<datum> data;
   data.push_back(d);
   return get_max_label(cli.classify(NAME, data)[0]);
@@ -497,4 +498,4 @@ TEST_P(classifier_test, nan) {
   EXPECT_FALSE(isfinite(result[0][0].prob));
 }
 
-};  // namespace
+}  // namespace

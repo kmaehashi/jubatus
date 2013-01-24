@@ -46,8 +46,10 @@ struct mixable_graph : public framework::mixable<jubatus::graph::graph_base,
     return diff;
   }
 
-  void mix_impl(const std::string& lhs, const std::string& rhs,
-                std::string& mixed) const {
+  void mix_impl(
+      const std::string& lhs,
+      const std::string& rhs,
+      std::string& mixed) const {
     mixed = lhs;
     jubatus::graph::graph_wo_index* graph =
         dynamic_cast<jubatus::graph::graph_wo_index*>(get_model().get());
@@ -63,8 +65,9 @@ struct mixable_graph : public framework::mixable<jubatus::graph::graph_base,
 
 class graph_serv : public framework::server_base {
  public:
-  graph_serv(const framework::server_argv& a,
-             const common::cshared_ptr<common::lock_service>& zk);
+  graph_serv(
+      const framework::server_argv& a,
+      const common::cshared_ptr<common::lock_service>& zk);
   virtual ~graph_serv();
 
   framework::mixer::mixer* get_mixer() const {
@@ -93,8 +96,10 @@ class graph_serv : public framework::server_base {
 
   bool remove_edge(const std::string& nid, const edge_id_t& e);
 
-  double get_centrality(const std::string& nid, const centrality_type& ct,
-                        const preset_query& q) const;
+  double get_centrality(
+      const std::string& nid,
+      const centrality_type& ct,
+      const preset_query& q) const;
 
   std::vector<node_id> get_shortest_path(const shortest_path_req& r) const;
 
@@ -122,11 +127,14 @@ class graph_serv : public framework::server_base {
   bool create_edge_here(edge_id_t eid, const edge_info& ei);
 
  private:
-  void selective_create_node_(const std::pair<std::string, int>& target,
-                              const std::string nid_str);
+  void selective_create_node_(
+      const std::pair<std::string, int>& target,
+      const std::string nid_str);
 
-  void find_from_cht_(const std::string& key, size_t n,
-                      std::vector<std::pair<std::string, int> >& out);
+  void find_from_cht_(
+      const std::string& key,
+      size_t n,
+      std::vector<std::pair<std::string, int> >& out);
   void get_members_(std::vector<std::pair<std::string, int> >& ret);
 
   common::cshared_ptr<common::lock_service> zk_;
