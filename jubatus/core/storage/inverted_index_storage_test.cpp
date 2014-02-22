@@ -81,6 +81,28 @@ TEST(inverted_index_storage, trivial) {
   EXPECT_EQ("r2", scores2[2].first);
 }
 
+TEST(inverted_index_storage, column_operations) {
+  inverted_index_storage s;
+  s.set("c1", "r1", 1);
+  s.set("c2", "r2", 1);
+  s.set("c3", "r3", 1);
+
+  std::vector<std::string> ids;
+  s.get_all_column_ids(ids);
+  ASSERT_EQ(3u, ids.size());
+  ASSERT_EQ("r1", ids[0]);
+  ASSERT_EQ("r2", ids[1]);
+  ASSERT_EQ("r3", ids[2]);
+
+  s.remove("c1", "r1");
+  s.mark_column_removed("r1");
+
+  s.get_all_column_ids(ids);
+  ASSERT_EQ(2u, ids.size());
+  ASSERT_EQ("r2", ids[0]);
+  ASSERT_EQ("r3", ids[1]);
+}
+
 TEST(inverted_index_storage, diff) {
   inverted_index_storage s;
   // r1: (1, 1, 0, 0, 0)
@@ -129,6 +151,68 @@ TEST(inverted_index_storage, mix) {
   EXPECT_EQ(0.0, s2.get("c2", "r1"));
   EXPECT_EQ(0.0, s2.get("c2", "r2"));
   EXPECT_EQ(1.0, s2.get("c2", "r3"));
+}
+
+TEST(inverted_index_storage, mix_column_operations) {
+  inverted_index_storage s1, s2;
+  s1.set("c1", "r1", 1.2345);
+  s1.set("c2", "r1", 2.3456);
+  s2.set("c1", "r2", 3.4567);
+  s2.set("c3", "r2", 4.5678);
+  s2.set("c1", "r3", 5.6789);
+
+  std::vector<std::string> ids;
+
+  s1.get_all_column_ids(ids);
+  ASSERT_EQ(1u, ids.size()); // [r1]
+  s2.get_all_column_ids(ids);
+  ASSERT_EQ(2u, ids.size()); // [r2, r3]
+
+  // remove r3
+  s2.remove("c1", "r3");
+  s2.mark_column_removed("r3");
+  s2.get_all_column_ids(ids);
+  ASSERT_EQ(1u, ids.size()); // [r2]
+
+  // do MIX
+  inverted_index_storage::diff_type d1, d2;
+  s1.get_diff(d1);
+  s2.get_diff(d2);
+  s1.mix(d2, d1);
+  s1.set_mixed_and_clear_diff(d1);
+  s2.set_mixed_and_clear_diff(d1);
+
+  // both storage should have two columns: [r1, r2]
+  s1.get_all_column_ids(ids);
+  ASSERT_EQ(2u, ids.size());
+  s2.get_all_column_ids(ids);
+  ASSERT_EQ(2u, ids.size());
+
+  // remove r1; it's already on master table, so
+  // it does not take effect immediately.
+  s1.remove("c1", "r1");
+  s1.remove("c2", "r1");
+  s1.mark_column_removed("r1");
+  s1.get_all_column_ids(ids);
+  ASSERT_EQ(2u, ids.size()); // [r1, r2]
+  s2.get_all_column_ids(ids);
+  ASSERT_EQ(2u, ids.size()); // [r1, r2]
+
+  // do MIX again
+  inverted_index_storage::diff_type d3, d4;
+  s1.get_diff(d3);
+  s2.get_diff(d4);
+  s1.mix(d3, d4);
+  s1.set_mixed_and_clear_diff(d4);
+  s2.set_mixed_and_clear_diff(d4);
+
+  // removed column should now be disappeared
+  s1.get_all_column_ids(ids);
+  ASSERT_EQ(1u, ids.size());
+  ASSERT_EQ("r2", ids[0]);
+  s2.get_all_column_ids(ids);
+  ASSERT_EQ(1u, ids.size());
+  ASSERT_EQ("r2", ids[0]);
 }
 
 }  // namespace storage

@@ -55,6 +55,7 @@ void inverted_index_storage::set(
   }
   inv_diff_[row][column_id] = val;
   column2norm_diff_[column_id] += val * val;
+  removed_columns_.erase(column_id);
 }
 
 float inverted_index_storage::get(
@@ -111,12 +112,35 @@ void inverted_index_storage::remove(
   set(row, column, 0.f);
 }
 
+void inverted_index_storage::mark_column_removed(
+    const std::string& column) {
+  // This method does not remove the actual data.
+  // Caller is responsible to remove all the data
+  // that refers to the column via remove method
+  // before calling this method.
+
+  uint64_t column_id = column2id_.get_id_const(column);
+  if (column_id == common::key_manager::NOTFOUND) {
+    return;
+  }
+
+  // Test if the data exists in the master table.
+  if (column2norm_.find(column_id) != column2norm_.end()) {
+    // Propagate to other nodes that this column was removed.
+    removed_columns_.insert(column_id);
+  } else {
+    // Immediately remove the column from the diff table.
+    column2norm_diff_.erase(column_id);
+  }
+}
+
 void inverted_index_storage::clear() {
   tbl_t().swap(inv_);
   tbl_t().swap(inv_diff_);
   imap_float_t().swap(column2norm_);
   imap_float_t().swap(column2norm_diff_);
   common::key_manager().swap(column2id_);
+  std::set<uint64_t>().swap(removed_columns_);
 }
 
 void inverted_index_storage::get_all_column_ids(
@@ -149,6 +173,11 @@ void inverted_index_storage::get_diff(diff_type& diff) const {
       it != column2norm_diff_.end(); ++it) {
     diff.column2norm[column2id_.get_key(it->first)] = it->second;
   }
+
+  for (std::set<uint64_t>::const_iterator it = removed_columns_.begin();
+      it != removed_columns_.end(); ++it) {
+    diff.removed_columns.insert(column2id_.get_key(*it));
+  }
 }
 
 bool inverted_index_storage::set_mixed_and_clear_diff(
@@ -180,6 +209,17 @@ bool inverted_index_storage::set_mixed_and_clear_diff(
     }
   }
   column2norm_diff_.clear();
+
+  for (std::set<std::string>::const_iterator
+      it = mixed_diff.removed_columns.begin();
+      it != mixed_diff.removed_columns.end(); ++it) {
+    uint64_t column_index = column2id_.get_id_const(*it);
+    if (column_index != common::key_manager::NOTFOUND) {
+      column2norm_.erase(column_index);
+    }
+  }
+  removed_columns_.clear();
+
   return true;
 }
 
@@ -199,6 +239,13 @@ void inverted_index_storage::mix(const diff_type& lhs, diff_type& rhs) const {
   for (map_float_t::const_iterator it = lhs.column2norm.begin();
       it != lhs.column2norm.end(); ++it) {
     rhs.column2norm[it->first] += it->second;
+  }
+
+  // merge removed_columns
+  for (std::set<std::string>::const_iterator
+      it = lhs.removed_columns.begin();
+      it != lhs.removed_columns.end(); ++it) {
+    rhs.removed_columns.insert(*it);
   }
 }
 

@@ -75,6 +75,7 @@ void inverted_index::clear_row(const std::string& id) {
   for (size_t i = 0; i < columns.size(); ++i) {
     inv.remove(columns[i].first, id);
   }
+  inv.mark_column_removed(id);
   orig_->get_model()->remove_row(id);
 }
 

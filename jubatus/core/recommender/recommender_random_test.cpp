@@ -229,20 +229,18 @@ TYPED_TEST_P(recommender_random_test, get_all_row_ids) {
   ASSERT_EQ(100u, ids.size());
   ASSERT_TRUE(expect_ids == ids);
 
-  /* TODO this test cannot be passed with current implementation
-   // Remove half rows
-   for (size_t i = 0; i < 50; ++i) {
-   string row_name = "r1_" + lexical_cast<string>(i);
-   r.clear_row(row_name);
-   }
+  // Remove half rows
+  for (size_t i = 0; i < 50; ++i) {
+    r.clear_row(expect_ids[i]);
+  }
 
-   // Get rest of ids
-   ids.clear();
-   r.get_all_row_ids(ids);
-   ASSERT_EQ(50u, ids.size());
-   expect_ids.erase(expect_ids.begin(), expect_ids.begin() + 50);
-   ASSERT_TRUE(expect_ids == ids);
-   */
+  // Get rest of ids
+  ids.clear();
+  r.get_all_row_ids(ids);
+  ASSERT_EQ(50u, ids.size());
+  sort(ids.begin(), ids.end());
+  expect_ids.erase(expect_ids.begin(), expect_ids.begin() + 50);
+  ASSERT_EQ(expect_ids, ids);
 }
 
 TYPED_TEST_P(recommender_random_test, diff) {

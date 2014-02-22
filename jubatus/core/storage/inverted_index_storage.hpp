@@ -41,12 +41,16 @@ class inverted_index_storage {
   struct diff_type {
     sparse_matrix_storage inv;
     map_float_t column2norm;
+    std::set<std::string> removed_columns;
 
-    MSGPACK_DEFINE(inv, column2norm);
+    MSGPACK_DEFINE(inv, column2norm, removed_columns);
 
     template<typename Ar>
     void serialize(Ar& ar) {
-      ar & JUBA_MEMBER(inv) & JUBA_MEMBER(column2norm);
+      ar
+          & JUBA_MEMBER(inv)
+          & JUBA_MEMBER(column2norm)
+          & JUBA_MEMBER(removed_columns);
     }
   };
 
@@ -56,6 +60,7 @@ class inverted_index_storage {
   void set(const std::string& row, const std::string& column, float val);
   float get(const std::string& row, const std::string& column) const;
   void remove(const std::string& row, const std::string& column);
+  void mark_column_removed(const std::string& column);
   void clear();
   void get_all_column_ids(std::vector<std::string>& ids) const;
 
@@ -77,7 +82,8 @@ class inverted_index_storage {
   void pack(msgpack::packer<msgpack::sbuffer>& packer) const;
   void unpack(msgpack::object o);
 
-  MSGPACK_DEFINE(inv_, inv_diff_, column2norm_, column2norm_diff_, column2id_);
+  MSGPACK_DEFINE(inv_, inv_diff_, column2norm_, column2norm_diff_, column2id_,
+                 removed_columns_);
 
  private:
   static float calc_l2norm(const common::sfv_t& sfv);
@@ -96,7 +102,8 @@ class inverted_index_storage {
         & JUBA_MEMBER(inv_diff_)
         & JUBA_MEMBER(column2norm_)
         & JUBA_MEMBER(column2norm_diff_)
-        & JUBA_MEMBER(column2id_);
+        & JUBA_MEMBER(column2id_)
+        & JUBA_MEMBER(removed_columns_);
   }
 
   void add_inp_scores(
@@ -109,6 +116,7 @@ class inverted_index_storage {
   imap_float_t column2norm_;
   imap_float_t column2norm_diff_;
   common::key_manager column2id_;
+  std::set<uint64_t> removed_columns_;
 };
 
 typedef framework::delegating_mixable<

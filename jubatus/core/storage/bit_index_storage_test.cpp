@@ -100,6 +100,23 @@ TEST(bit_index_storage, diff) {
   EXPECT_TRUE(make_vector("1010") == v);
 }
 
+TEST(bit_index_storage, row_operations) {
+  bit_index_storage s1;
+  s1.set_row("r1", make_vector("0101"));
+  s1.set_row("r2", make_vector("1010"));
+  s1.set_row("r3", make_vector("1100"));
+
+  std::vector<std::string> ids;
+
+  s1.get_all_row_ids(ids);
+  ASSERT_EQ(3u, ids.size());
+
+  s1.remove_row("r2");
+
+  s1.get_all_row_ids(ids);
+  ASSERT_EQ(2u, ids.size());
+}
+
 TEST(bit_index_storage, mix) {
   bit_index_storage s1, s2, s3;
   s1.set_row("r1", make_vector("0101"));
@@ -138,6 +155,50 @@ TEST(bit_index_storage, mix) {
   s3.get_row("r4", v);
   EXPECT_TRUE(v == bit_vector());
 }
+
+TEST(bit_index_storage, mix_row_operations) {
+  bit_index_storage s1, s2;
+  s1.set_row("r1", make_vector("0101"));
+  s1.set_row("r2", make_vector("1010"));
+  s2.set_row("r3", make_vector("1100"));
+  s2.set_row("r4", make_vector("0011"));
+
+  // mix
+  bit_table_t d1, d2;
+  s1.get_diff(d1);
+  s2.get_diff(d2);
+  s1.mix(d1, d2);
+  s1.set_mixed_and_clear_diff(d2);
+  s2.set_mixed_and_clear_diff(d2);
+
+  std::vector<std::string> ids;
+
+  // both storage has [r1, r2, r3, r4]
+  s1.get_all_row_ids(ids);
+  ASSERT_EQ(4u, ids.size());
+  s2.get_all_row_ids(ids);
+  ASSERT_EQ(4u, ids.size());
+
+  // remove row does not take effect immedeately
+  s1.remove_row("r2");
+  s1.get_all_row_ids(ids);
+  ASSERT_EQ(4u, ids.size());
+
+  // mix
+  bit_table_t d3, d4;
+  s1.get_diff(d3);
+  s2.get_diff(d4);
+  s1.mix(d3, d4);
+  s1.set_mixed_and_clear_diff(d3);
+  s2.set_mixed_and_clear_diff(d4);
+
+  // both storage has [r1, r3, r4]
+  s1.get_all_row_ids(ids);
+  ASSERT_EQ(3u, ids.size());
+  s2.get_all_row_ids(ids);
+  ASSERT_EQ(3u, ids.size());
+}
+
 
 }  // namespace storage
 }  // namespace core
