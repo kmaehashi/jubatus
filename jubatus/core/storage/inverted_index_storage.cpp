@@ -109,7 +109,36 @@ float inverted_index_storage::get_from_tbl(
 void inverted_index_storage::remove(
     const std::string& row,
     const std::string& column) {
+  uint64_t column_id = column2id_.get_id_const(column);
+  if (column_id == common::key_manager::NOTFOUND) {
+    return;
+  }
+
   set(row, column, 0.f);
+
+  // Test if the data exists in the master table.
+  bool exist = false;
+  get_from_tbl(row, column_id, inv_, exist);
+
+  // If the data exists in the master table, we should
+  // keep it in the diff table until next MIX to propagate
+  // the removal of this data to other nodes.
+  // Otherwise we can immediately remove the row from
+  // the diff table.
+  if (! exist) {
+    tbl_t::iterator it = inv_diff_.find(row);
+    if (it != inv_diff_.end()) {
+      row_t::iterator it_row = it->second.find(column_id);
+      if (it_row != it->second.end()) {
+        it->second.erase(it_row);
+        if (it->second.empty()) {
+          // There are no columns that belongs to this row,
+          // so we can remove the row itself.
+          inv_diff_.erase(it);
+        }
+      }
+    }
+  }
 }
 
 void inverted_index_storage::mark_column_removed(
