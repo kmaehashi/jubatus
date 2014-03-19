@@ -50,7 +50,7 @@ void delete_config(
     const string& type,
     const string& name);
 void get_config(const string& zkhosts, const string& type, const string& name);
-void get_configs(const string& zkhosts);
+void get_configs(const string& zkhosts, const string& type, const string& name);
 void print_config(
     jubatus::server::common::lock_service& z,
     const string& type,
@@ -66,10 +66,8 @@ try {
   p.add<std::string>("cmd", 'c',
       "command to operate config (write|read|delete|list)", true);
   p.add<std::string>("file", 'f', "[write] config file to set", false, "");
-  p.add<std::string>("type", 't',
-      "[write|read|delete] learning machine type", false, "");
-  p.add<std::string>("name", 'n',
-      "[write|read|delete] learning machine name", false, "");
+  p.add<std::string>("type", 't', "learning machine type", false, "");
+  p.add<std::string>("name", 'n', "learning machine name", false, "");
   p.add<std::string>("zookeeper", 'z',
       "ZooKeeper location environment: 'ZK' is available instead", false);
 
@@ -122,7 +120,7 @@ try {
       get_config(zk, type, name);
     }
   } else if (cmd == "list") {
-    get_configs(zk);
+    get_configs(zk, type, name);
   } else {
     cout << "unknown cmd: " << cmd << endl;
     cout << p.usage() << endl;
@@ -170,7 +168,7 @@ void get_config(const string& zkhosts, const string& type, const string& name) {
   print_config(*ls_, type, name);
 }
 
-void get_configs(const string& zkhosts) {
+void get_configs(const string& zkhosts, const string& type, const string& name) {
   jubatus::util::lang::shared_ptr<jubatus::server::common::lock_service> ls_(
       jubatus::server::common::create_lock_service(
           "zk", zkhosts, 10, "/dev/null"));
@@ -179,9 +177,10 @@ void get_configs(const string& zkhosts) {
   get_all_config_paths(*ls_, paths);
 
   for (size_t i = 0; i < paths.size(); i++) {
-    cout << "type: " << paths[i].first << ", name: " << paths[i].second << endl;
-    print_config(*ls_, paths[i].first, paths[i].second);
-    cout << '\n';
+    if ((type.empty() || type == paths[i].first) &&
+        (name.empty() || name == paths[i].second)) {
+      cout << paths[i].first << "\t" << paths[i].second << endl;
+    }
   }
 }
 
