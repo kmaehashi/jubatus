@@ -18,7 +18,14 @@
 
 #include <string>
 #include "jubatus/util/data/serialization.h"
+#include "jubatus/util/data/unordered_set.h"
+// TODO(kmaehashi) move key_matcher to common
+#include "../fv_converter/key_matcher_factory.hpp"
 #include "../common/exception.hpp"
+#include "exception.hpp"
+
+using jubatus::util::data::unordered_set;
+using jubatus::core::fv_converter::key_matcher_factory;
 
 namespace jubatus {
 namespace core {
@@ -32,30 +39,82 @@ lru_unlearner::lru_unlearner(const config& conf)
             "max_size must be a positive integer"));
   }
   entry_map_.reserve(max_size_);
+
+  if (conf.sticky_pattern) {
+    key_matcher_factory f;
+    sticky_matcher_ = f.create_matcher(*conf.sticky_pattern);
+  }
 }
 
 void lru_unlearner::touch(const std::string& id) {
-  entry_map::iterator it = entry_map_.find(id);
-  if (it != entry_map_.end()) {
-    lru_.erase(it->second);
-    lru_.push_front(id);
-    it->second = lru_.begin();
-    return;
+  bool is_sticky = sticky_matcher_ && sticky_matcher_->match(id);
+
+  if (is_sticky) {
+    unordered_set<std::string>::const_iterator it = sticky_ids_.find(id);
+    if (it != sticky_ids_.end()) {
+      // Sticky ID that is already on memory; nothing to do.
+      return;
+    }
+  } else {
+    entry_map::iterator it = entry_map_.find(id);
+    if (it != entry_map_.end()) {
+      // Non-sticky ID that is already on memory; mark the ID
+      // as most recently used.
+      lru_.erase(it->second);
+      lru_.push_front(id);
+      it->second = lru_.begin();
+      return;
+    }
   }
 
-  if (entry_map_.size() == max_size_) {
+  if ((entry_map_.size() + sticky_ids_.size()) == max_size_) {
+    // Need to secure the space for the new ID.
+    if (entry_map_.size() == 0) {
+      // Nothing can be unlearned.
+      throw JUBATUS_EXCEPTION(
+          max_id_limit("no more space to add new ID: " + id));
+    }
+
     // Unlearn the least recently used entry.
     unlearn(lru_.back());
     entry_map_.erase(lru_.back());
     lru_.pop_back();
   }
 
-  lru_.push_front(id);
-  entry_map_[id] = lru_.begin();
+  // Register the new ID.
+  if (is_sticky) {
+    sticky_ids_.insert(id);
+  } else {
+    lru_.push_front(id);
+    entry_map_[id] = lru_.begin();
+  }
+}
+
+bool lru_unlearner::remove(const std::string& id) {
+  // Try to erase from non-sticky ID
+  {
+    entry_map::iterator it = entry_map_.find(id);
+    if (it != entry_map_.end()) {
+      lru_.erase(it->second);
+      entry_map_.erase(it);
+      return true;
+    }
+  }
+
+  // Try to erase from sticky ID
+  {
+    unordered_set<std::string>::iterator it = sticky_ids_.find(id);
+    if (it != sticky_ids_.end()) {
+      sticky_ids_.erase(it);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 bool lru_unlearner::exists_in_memory(const std::string& id) const {
-  return entry_map_.count(id) > 0;
+  return entry_map_.count(id) > 0 || sticky_ids_.count(id) > 0;
 }
 
 // private

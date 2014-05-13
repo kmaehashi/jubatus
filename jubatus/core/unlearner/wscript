@@ -11,7 +11,7 @@ def build(bld):
       'lru_unlearner.cpp',
       'random_unlearner.cpp',
       'unlearner_factory.cpp'],
-    use = 'jubacommon')
+    use = 'jubacommon jubaconverter')
 
   bld.program(
     features = 'gtest',
