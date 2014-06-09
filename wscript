@@ -52,7 +52,8 @@ def configure(conf):
 
   # Generate config.hpp
   conf.env.JUBATUS_PLUGIN_DIR = conf.env['LIBDIR'] + '/jubatus/plugin'
-  conf.define('JUBATUS_VERSION', VERSION)
+  conf.env.JUBATUS_VERSION = VERSION
+  conf.define('JUBATUS_VERSION', conf.env.JUBATUS_VERSION)
   conf.define('JUBATUS_APPNAME', APPNAME)
   conf.define('JUBATUS_PLUGIN_DIR', conf.env.JUBATUS_PLUGIN_DIR)
   conf.write_config_header('jubatus/config.hpp', guard="JUBATUS_CONFIG_HPP_", remove=False)
