@@ -114,7 +114,7 @@ do_download() {
     # jubadump
     rm -rf jubadump
     git clone https://github.com/jubatus/jubadump.git jubadump
-    push jubadump
+    pushd jubadump
     git checkout ${JUBADUMP_VER}
     popd
 
