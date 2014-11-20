@@ -48,6 +48,11 @@ inline const char* const_basename(const char* path) {
   return base ? (base + 1) : path;
 }
 
+bool is_log4cxx_configured() {
+  log4cxx::LoggerPtr rootLogger = log4cxx::Logger::getRootLogger();
+  return rootLogger->getAllAppenders().size() != 0;
+}
+
 }  // namespace
 
 stream_logger::stream_logger(
@@ -82,16 +87,18 @@ void setup_parameters(const char* progname, const char* host, int port) {
   ::setenv("JUBATUS_PORT", lexical_cast<std::string>(port).c_str(), 1);
 }
 
-void configure() {
+bool configure() {
   log4cxx::LayoutPtr layout(
       new log4cxx::PatternLayout("%d %X{tid} %-5p [%F:%L] %m%n"));
   log4cxx::AppenderPtr appender(new log4cxx::ConsoleAppender(layout));
   log4cxx::BasicConfigurator::configure(appender);
+  return is_log4cxx_configured();
 }
 
-void configure(const std::string& config_file) {
+bool configure(const std::string& config_file) {
   // Exception will not be thrown even if there is an error in config file.
   log4cxx::xml::DOMConfigurator::configure(config_file);
+  return is_log4cxx_configured();
 }
 
 }  // namespace logger

@@ -99,13 +99,17 @@ void setup_parameters(const char* progname, const char* host, int port);
 
 /**
  * Configures the logging library. (standard output)
+ *
+ * @return true when successfully configured, false when failed.
  */
-void configure();
+bool configure();
 
 /**
  * Configures the logging library with given config file.
+ *
+ * @return true when successfully configured, false when failed.
  */
-void configure(const std::string&);
+bool configure(const std::string&);
 
 }  // namespace logger
 }  // namespace common
