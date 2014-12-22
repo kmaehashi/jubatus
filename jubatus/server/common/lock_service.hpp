@@ -25,6 +25,10 @@
 #include "jubatus/util/lang/shared_ptr.h"
 #include "jubatus/util/concurrent/mutex.h"
 #include "jubatus/util/concurrent/lock.h"
+#include "jubatus/util/system/time_util.h"
+
+using jubatus::util::system::time::clock_time;
+using jubatus::util::system::time::get_clock_time;
 
 namespace jubatus {
 namespace server {
@@ -34,7 +38,8 @@ namespace common {
 class lock_service {
  public:
   // timeout [sec]
-  lock_service() {
+  lock_service()
+  : clock_(get_clock_time()) {
   }
   virtual ~lock_service() {
   }
@@ -81,6 +86,13 @@ class lock_service {
   virtual const std::string& get_hosts() const = 0;
   virtual const std::string type() const = 0;
   virtual const std::string get_connected_host_and_port() const = 0;
+
+  const std::pair<uint64_t, uint64_t> get_clock() {
+    return std::make_pair(clock_.sec, clock_.usec);
+  }
+
+ private:
+  const jubatus::util::system::time::clock_time clock_;
 };
 
 class try_lockable : public jubatus::util::concurrent::lockable {

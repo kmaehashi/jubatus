@@ -25,6 +25,7 @@
 #include <utility>
 #include <vector>
 #include "jubatus/util/lang/cast.h"
+#include "jubatus/util/system/time_util.h"
 #include "jubatus/core/common/exception.hpp"
 #include "logger/logger.hpp"
 
@@ -46,13 +47,14 @@ string build_loc_str(const string& ip, int port, unsigned int i) {
   return ret;
 }
 
-// /path/base -> 127.0.0.1 -> 9199 -> /path/base/127.0.0.1_9199
+// /path/base -> 127.0.0.1 -> 9199 -> /path/base/127.0.0.1_9199_123456789
 void build_existence_path(
     const string& base,
     const string& ip,
     int port,
+    const string& suffix,
     string& out) {
-  out = base + "/" + ip + "_" + lexical_cast<string, int>(port);
+  out = base + "/" + ip + "_" + lexical_cast<string, int>(port) + "_" + suffix;
 }
 
 void build_actor_path(string& path, const string& type, const string& name) {
@@ -75,10 +77,12 @@ void build_config_lock_path(
   path += "/config_lock";
 }
 
-// 127.0.0.1_9199 -> (127.0.0.1, 9199)
+// 127.0.0.1_9199_xxx -> (127.0.0.1, 9199)
 bool revert(const string& name, string& ip, int& port) {
-  ip = name.substr(0, name.find("_"));
-  port = atoi(name.substr(name.find("_") + 1).c_str());
+  size_t ip_end = name.find("_");
+  size_t port_end = name.find("_", ip_end);
+  ip = name.substr(0, ip_end);
+  port = atoi(name.substr(ip_end + 1, port_end).c_str());
   return true;
 }
 
@@ -91,6 +95,9 @@ void register_actor(
     int port) {
   bool success = true;
 
+  std::pair<uint64_t, uint64_t> clock = z.get_clock();
+  string suffix = lexical_cast<string>(clock.first) + lexical_cast<string>(clock.second);
+
   string path;
   build_actor_path(path, type, name);
   success = success && z.create(path);
@@ -100,7 +107,7 @@ void register_actor(
 
   {
     string path1;
-    build_existence_path(path, ip, port, path1);
+    build_existence_path(path, ip, port, suffix, path1);
     success = success && z.create(path1, "", true);
     if (success) {
       LOG(INFO) << "actor created: " << path1;
@@ -123,6 +130,9 @@ void register_active(
     int port) {
   bool success = true;
 
+  std::pair<uint64_t, uint64_t> clock = z.get_clock();
+  string suffix = lexical_cast<string>(clock.first) + lexical_cast<string>(clock.second);
+
   string path;
   build_actor_path(path, type, name);
   success = success && z.create(path);
@@ -132,7 +142,7 @@ void register_active(
 
   {
     string path1;
-    build_existence_path(path, ip, port, path1);
+    build_existence_path(path, ip, port, suffix, path1);
     success = success && z.create(path1, "", true);
     if (success) {
       LOG(INFO) << "active created: " << path1;
@@ -155,12 +165,15 @@ void unregister_active(
     int port) {
   bool success = true;
 
+  std::pair<uint64_t, uint64_t> clock = z.get_clock();
+  string suffix = lexical_cast<string>(clock.first) + lexical_cast<string>(clock.second);
+
   string path;
   build_actor_path(path, type, name);
   path += "/actives";
   {
     string path1;
-    build_existence_path(path, ip, port, path1);
+    build_existence_path(path, ip, port, suffix, path1);
     success = success && z.remove(path1);
     if (success) {
       LOG(INFO) << "active removed: " << path1;
@@ -195,9 +208,12 @@ void watch_delete_actor(
             "lock_service::create"));
   }
 
+  std::pair<uint64_t, uint64_t> clock = z.get_clock();
+  string suffix = lexical_cast<string>(clock.first) + lexical_cast<string>(clock.second);
+
   {
     string path1;
-    build_existence_path(path, ip, port, path1);
+    build_existence_path(path, ip, port, suffix, path1);
     bool success = z.bind_delete_watcher(path1, callback);
     if (success) {
       LOG(INFO) << "watch start: " << path1;
@@ -219,13 +235,16 @@ void register_proxy(
     int port) {
   bool success = true;
 
+  std::pair<uint64_t, uint64_t> clock = z.get_clock();
+  string suffix = lexical_cast<string>(clock.first) + lexical_cast<string>(clock.second);
+
   string path = JUBAPROXY_BASE_PATH;
   success = z.create(path) && success;
   path += "/" + type;
   success = z.create(path) && success;
   {
     string path1;
-    build_existence_path(path, ip, port, path1);
+    build_existence_path(path, ip, port, suffix, path1);
     success = z.create(path1, "", true) && success;
     if (success) {
       LOG(INFO) << "proxy created: " << path1;

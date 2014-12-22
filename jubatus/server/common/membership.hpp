@@ -43,6 +43,7 @@ void build_existence_path(
     const std::string&,
     const std::string&,
     int,
+    const std::string&,
     std::string&);
 
 void build_actor_path(
