@@ -1,6 +1,20 @@
 RPM Packaging
 =============
 
+Docker
+--------
+
+::
+
+  docker build -t jubatus-rpmbuild-centos6 -f docker/Dockerfile.centos6 .
+  docker build -t jubatus-rpmbuild-centos7 -f docker/Dockerfile.centos7 .
+  docker run --rm -v $PWD:/pkg jubatus-rpmbuild-centos6 /pkg/package.sh -cai
+  docker run --rm -v $PWD:/pkg jubatus-rpmbuild-centos7 /pkg/package.sh -cai
+
+Manual
+--------
+
+
 1. On RHEL 6 or 7, install the following packages.
 
 ::

@@ -11,7 +11,8 @@ PKGS_JUBATUS="jubatus-core jubatus jubadump jubatus-release"
 # Directories
 PACKAGER="$(basename "${0}")"
 PACKAGER_DIR="$(cd $(dirname ${0}) && echo ${PWD})"
-PACKAGER_RPM_DIR="${PACKAGER_DIR}/rpmbuild"
+PACKAGER_RPM_TEMPLATE_DIR="${PACKAGER_DIR}/rpmbuild"
+PACKAGER_RPM_DIR="${PACKAGER_DIR}/rpmbuild_work"
 
 # Commands
 RUN_AS_ROOT="sudo"

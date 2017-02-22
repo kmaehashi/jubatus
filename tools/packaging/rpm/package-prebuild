@@ -147,7 +147,7 @@ spec_substitute() {
 	SPECINFILE="${1}"; shift
 	SPECFILE="${1}"; shift
 
-	cp -a "${SPECINFILE}" "${SPECFILE}"
+	cp "${SPECINFILE}" "${SPECFILE}"
 	for KEY in "${@}"; do
 		VALUE="$(eval echo \$${KEY})"
 		perl -pi -e "s|\@${KEY}\@|${VALUE}|g" "${SPECFILE}"
